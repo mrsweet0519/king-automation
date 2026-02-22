@@ -1,0 +1,27 @@
+name: Daily 6AM Report
+on:
+  schedule:
+    - cron: '0 21 * * *'
+  workflow_dispatch:
+jobs:
+  send-daily-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      - name: Run Daily Report
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EMAIL_CONFIG_JSON: ${{ secrets.EMAIL_CONFIG_JSON }}
+          DASHBOARD_PATH: "결과물/채널분석/킹옥션_마케팅_통합_대시보드.html"
+        run: |
+          python "작업자(에이전트)/scripts/send_report.py"
