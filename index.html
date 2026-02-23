@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -36,7 +37,7 @@
             text-align: center;
             border-bottom-left-radius: 30px;
             border-bottom-right-radius: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             position: relative;
         }
 
@@ -72,7 +73,8 @@
         .container {
             flex: 1;
             padding: 30px 20px;
-            max-width: 500px; /* 모바일 폭 기준 중앙 정렬 */
+            max-width: 900px;
+            /* PC, 모바일 모두 대응 */
             margin: -20px auto 0;
             width: 100%;
             box-sizing: border-box;
@@ -90,6 +92,30 @@
         .button-grid {
             display: grid;
             gap: 15px;
+            grid-template-columns: 1fr;
+        }
+
+        /* PC 화면용 그리드 */
+        @media (min-width: 768px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .container {
+                margin: -40px auto 0;
+            }
+
+            header {
+                padding: 40px 20px 60px;
+            }
+
+            .logo-text {
+                font-size: 32px;
+            }
+
+            .sub-text {
+                font-size: 15px;
+            }
         }
 
         /* 개별 버튼 스타일 */
@@ -101,10 +127,17 @@
             border-radius: 20px;
             text-decoration: none;
             color: var(--text-main);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
             transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .app-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .app-btn:active {
@@ -125,10 +158,21 @@
             flex-shrink: 0;
         }
 
-        .bg-red { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
-        .bg-blue { background: linear-gradient(135deg, #36d1dc, #5b86e5); }
-        .bg-dark { background: linear-gradient(135deg, #434343, #000000); }
-        .bg-green { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .bg-red {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+        }
+
+        .bg-blue {
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+        }
+
+        .bg-dark {
+            background: linear-gradient(135deg, #434343, #000000);
+        }
+
+        .bg-green {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
 
         .btn-text h3 {
             margin: 0 0 5px 0;
@@ -158,21 +202,43 @@
             background: transparent;
         }
     </style>
+    <script>
+        // 컴퓨터(로컬)와 폰(깃허브웹)의 폴더 구조 차이를 똑똑하게 감지하여 경로를 변경
+        function smartNav(type) {
+            const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+            if (type === 'crm') {
+                if (isLocal) {
+                    window.location.href = '../고객관리/킹옥션_CRM_시스템.html';
+                } else {
+                    window.location.href = '킹옥션_CRM_시스템.html';
+                }
+            } else if (type === 'marketing') {
+                // 마케팅은 컴퓨터에선 '채널분석' 상위 폴더에 있고, 폰에선 한군데 모아둠
+                if (isLocal) {
+                    window.location.href = '../채널분석/킹옥션_마케팅_통합_대시보드.html';
+                } else {
+                    window.location.href = '킹옥션_마케팅_통합_대시보드.html';
+                }
+            }
+        }
+    </script>
 </head>
+
 <body>
 
     <header>
-        <h1 class="logo-text">킹옥션 <span>포털</span></h1>
-        <div class="sub-text">부동산 실전수익반 통합 관리 시스템</div>
+        <h1 class="logo-text">킹옥션 <span>통합관리시스템</span></h1>
+        <div class="sub-text">한국세관공매 전문 교육기관 전용</div>
         <div class="user-badge"><i class="fa-solid fa-crown"></i> Admin Access</div>
     </header>
 
     <div class="container">
         <div class="menu-title">⚡ 빠른 실행</div>
         <div class="button-grid">
-            
+
             <!-- CRM 고객관리 버튼 -->
-            <a href="킹옥션_CRM_시스템.html" class="app-btn">
+            <a href="#" onclick="smartNav('crm'); return false;" class="app-btn">
                 <div class="icon-box bg-blue">
                     <i class="fa-solid fa-users"></i>
                 </div>
@@ -184,7 +250,7 @@
             </a>
 
             <!-- 마케팅 대시보드 버튼 -->
-            <a href="킹옥션_마케팅_통합_대시보드.html" class="app-btn">
+            <a href="#" onclick="smartNav('marketing'); return false;" class="app-btn">
                 <div class="icon-box bg-red">
                     <i class="fa-solid fa-chart-line"></i>
                 </div>
@@ -201,14 +267,17 @@
                     <i class="fa-solid fa-box-open"></i>
                 </div>
                 <div class="btn-text">
-                    <h3>세관공매 수익 분석 <span style="font-size:10px; background:#eee; padding:2px 5px; border-radius:5px; color:#888;">준비중</span></h3>
+                    <h3>세관공매 수익 분석 <span
+                            style="font-size:10px; background:#eee; padding:2px 5px; border-radius:5px; color:#888;">준비중</span>
+                    </h3>
                     <p>수입 화물 및 압류품 원가/수익률 계산</p>
                 </div>
                 <div class="arrow-icon"><i class="fa-solid fa-chevron-right"></i></div>
             </a>
 
             <!-- 구글 드라이브 자료실 직행 -->
-            <a href="https://drive.google.com/drive/folders/1B3jX0R5fP4M9Z-y082D5C8D-U4c_rM2e" target="_blank" class="app-btn">
+            <a href="https://drive.google.com/drive/folders/1B3jX0R5fP4M9Z-y082D5C8D-U4c_rM2e" target="_blank"
+                class="app-btn">
                 <div class="icon-box bg-green">
                     <i class="fa-brands fa-google-drive"></i>
                 </div>
@@ -228,4 +297,5 @@
     </footer>
 
 </body>
+
 </html>
