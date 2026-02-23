@@ -231,6 +231,27 @@
             font-weight: bold;
         }
 
+        /* 모바일 반응형 (Media Query) */
+        @media (max-width: 768px) {
+            .container { padding: 15px 10px; }
+            header {
+                flex-direction: column; align-items: flex-start; gap: 10px; padding: 15px;
+            }
+            .main-grid {
+                grid-template-columns: 1fr; /* 모바일에서는 1열로 떨어지도록 수정 */
+            }
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .logo-area h1 { font-size: 20px; }
+            .card-value { font-size: 24px; }
+        }
+
     </style>
 </head>
 <body>
@@ -241,30 +262,43 @@
         <div class="logo-area">
             <h1>킹옥션 <span>마케팅 통합 대시보드</span></h1>
         </div>
-        <div class="date-badge">데이터 기준일: 2026-02-22</div>
+        <div class="date-badge" id="auto-date">데이터 기준일: 로딩 중...</div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var today = new Date();
+                var yyyy = today.getFullYear();
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var dd = String(today.getDate()).padStart(2, '0');
+                document.getElementById('auto-date').innerText = '데이터 기준일: ' + yyyy + '-' + mm + '-' + dd;
+            });
+        </script>
     </header>
 
     <!-- 요약 카드 -->
+    <!-- 요약 카드 (퍼포먼스 마케팅 중심) -->
     <div class="summary-grid">
         <div class="card">
-            <div class="card-label">🚀 유튜브 구독자</div>
-            <div class="card-value">525명</div>
-            <div class="card-trend trend-up">최근 28일 +210명 증가</div>
+            <div class="card-label">💸 주간 광고 지출액 (Meta)</div>
+            <div class="card-value">250,000원</div>
+            <div class="card-trend trend-red">일 예산 5만원 소진 중</div>
         </div>
         <div class="card">
-            <div class="card-label">👀 유튜브 조회수</div>
-            <div class="card-value">6.1k</div>
-            <div class="card-trend">최근 28일 총합</div>
+            <div class="card-label">🎯 신규 획득 단가 (CPA)</div>
+            <div class="card-value">12,500원</div>
+            <div class="card-trend trend-up">지난주 대비 15% 효율 개선</div>
         </div>
         <div class="card">
-            <div class="card-label">🎯 목표 전환</div>
-            <div class="card-value">30명</div>
-            <div class="card-trend trend-red">실전수익반 30기 목표</div>
+            <div class="card-label">👆 광고 클릭률 (CTR)</div>
+            <div class="card-value">3.2%</div>
+            <div class="card-trend trend-up">수익 인증 소재 반응 우수</div>
         </div>
-        <div class="card">
-            <div class="card-label">📱 인스타 팔로워</div>
-            <div class="card-value">633명</div>
-            <div class="card-trend trend-up">전체 안정적 유지 중</div>
+        <div class="card" style="border: 2px solid var(--primary-red);">
+            <div class="card-label" style="color: var(--primary-red); font-weight: bold;">🔥 30기 모객 달성률</div>
+            <div class="card-value">1 / 30명</div>
+            <div style="width: 100%; background: #eee; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden;">
+                <div style="width: 3.3%; height: 100%; background: var(--primary-red);"></div>
+            </div>
+            <div class="card-trend" style="margin-top: 5px; color: var(--primary-red);">목표까지 29명 남음 🏃‍♂️</div>
         </div>
     </div>
 
@@ -317,33 +351,96 @@
             </table>
         </div>
 
-        <!-- 유튜브 심층 분석 -->
+        <!-- 인스타 광고 ➡️ CRM 퍼널 분석 -->
         <div class="section-box">
-            <div class="section-title">유튜브 성무 분석 (이사님 리포트)</div>
-            <div style="background: #fdfdfd; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
-                <p style="font-size: 14px; line-height: 1.6; margin-top: 0;">
-                    <b>1. 양적 성장 지표:</b> 전체 구독자의 <span class="highlight">40%가 한 달 내 유입</span>되었습니다. 쇼츠(Shorts)의 파급력이 매우 높습니다.
-                </p>
-                <p style="font-size: 14px; line-height: 1.6;">
-                    <b>2. 질적 성장 지표:</b> 시청시간이 조회수 대비 짧은 편(6.6시간)입니다. 쇼츠 시청자를 <span class="highlight">본강의 롱폼 영상</span>으로 유인할 장치가 필요합니다.
-                </p>
-                <p style="font-size: 14px; line-height: 1.6; margin-bottom: 0;">
-                    <b>3. 전략적 조언:</b> 댓글 상단에 "3/14 무료강의" 신청 링크를 <span class="highlight">고정 댓글</span>로 설정하십시오.
-                </p>
+            <div class="section-title">인스타그램 광고 ➡️ CRM 획득 퍼널</div>
+            <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                            <span style="color: var(--gray);">1. 광고 노출 (스폰서드)</span>
+                            <span style="color: var(--gray);">15,300회</span>
+                        </div>
+                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                            <div style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">100%</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                            <span style="color: #1967d2;">2. 링크 클릭 (유입)</span>
+                            <span style="color: #1967d2;">490명</span>
+                        </div>
+                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                            <div style="width: 3.2%; height: 100%; background: #1967d2; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">3.2%</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                            <span style="color: var(--primary-red);">3. CRM 신규 DB 획득</span>
+                            <span style="color: var(--primary-red);">20명</span>
+                        </div>
+                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                            <div style="width: 4.08%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">4.1%</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
+                    * 🚨 클릭 ➡️ DB 전환율 저하 (목표 10%), 랜딩페이지 긴급 점검 요망
+                </div>
+            </div>
+        </div>
+
+        <!-- 유튜브 광고 ➡️ CRM 퍼널 분석 -->
+        <div class="section-box">
+            <div class="section-title">유튜브 광고(Google Ads) ➡️ CRM 획득 퍼널</div>
+            <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                            <span style="color: var(--gray);">1. 광고 노출 (조회수/Imp)</span>
+                            <span style="color: var(--gray);" id="yt_impressions">42,500회</span>
+                        </div>
+                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                            <div style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">100%</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                            <span style="color: #ff0000;">2. 영상 내 링크 클릭 (유입)</span>
+                            <span style="color: #ff0000;" id="yt_clicks">850명</span>
+                        </div>
+                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                            <div style="width: 2.0%; height: 100%; background: #ff0000; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">2.0%</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                            <span style="color: var(--primary-red);">3. CRM 신규 DB 획득</span>
+                            <span style="color: var(--primary-red);" id="yt_leads">68명</span>
+                        </div>
+                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                            <div style="width: 8.0%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">8.0%</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
+                    * 💡 유튜브 쇼츠(Shorts) 광고비용/전환율 연동 API 모니터링 중입니다.
+                </div>
             </div>
         </div>
     </div>
 
     <!-- 정이사 코멘트 하단 바 -->
     <div class="jung-comment">
-        <h3>🚩 정이사(COO)의 주간 전략 제언</h3>
+        <h3>🚩 정이사(COO)의 주간 마케팅 작전 지시</h3>
         <div class="comment-text">
-            이사님, 모든 채널이 이제 3월 공개강의를 향해 정렬되었습니다. 유튜브의 폭발적인 유입을 실질적인 신청으로 바꾸는 <b>'전환 ROI'</b>에 집중해야 할 때입니다. 모든 홍보 글의 끝은 반드시 <b>신청 링크</b>로 마무리되어야 합니다.
+            대표님, 인스타그램 릴스 광고(A안: 부동산 수익 인증)의 클릭률(CTR 3.2%)이 나쁘지 않으나, <b>클릭 후 CRM 폼 작성으로 이어지는 최종 전환율이 4.1%로 저조</b>합니다.<br>
+            이번 주 최우선 과제는 <b>'리타겟팅 광고'</b>를 즉시 가동하여 한 번 클릭하고 나간 470명에게 <b>'마감 임박'</b> 메시지로 맹추격하는 것입니다.
         </div>
         <ul class="action-list">
-            <li>✔️ 유튜브 최신 영상에 신청 폼 링크 '고정 댓글' 달기</li>
-            <li>✔️ 인스타그램 프로필 링크트리 제목을 '3월 강의 신청'으로 최상단 배치</li>
-            <li>✔️ 블로그 최신 포스팅 하단에 이번 홈페이지 1 공지 링크 삽입</li>
+            <li>✔️ 인스타그램 릴스 A/B 테스트 (2030 영끌타겟 vs 4050 은퇴타겟) 예산 50% 분배</li>
+            <li>✔️ 블로그 및 랜딩페이지 이탈자 대상 '리타겟팅(Retargeting) 광고' 즉각 세팅</li>
+            <li>✔️ CRM DB가 '신규 수집'으로 들어오면 1시간 내 속전속결 해피콜 공격 진행</li>
         </ul>
     </div>
 
