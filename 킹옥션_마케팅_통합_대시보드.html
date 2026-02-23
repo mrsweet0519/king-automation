@@ -262,7 +262,16 @@
         <div class="logo-area">
             <h1>킹옥션 <span>마케팅 통합 대시보드</span></h1>
         </div>
-        <div class="date-badge">데이터 기준일: 2026-02-22</div>
+        <div class="date-badge" id="auto-date">데이터 기준일: 로딩 중...</div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var today = new Date();
+                var yyyy = today.getFullYear();
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var dd = String(today.getDate()).padStart(2, '0');
+                document.getElementById('auto-date').innerText = '데이터 기준일: ' + yyyy + '-' + mm + '-' + dd;
+            });
+        </script>
     </header>
 
     <!-- 요약 카드 -->
