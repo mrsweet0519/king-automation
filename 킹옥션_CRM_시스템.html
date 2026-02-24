@@ -1643,9 +1643,11 @@
 
             function saveCustomer(e) {
                 e.preventDefault();
-                const id = document.getElementById('customerId').value;
+                const rawId = document.getElementById('customerId').value;
+                const parseId = rawId ? (isNaN(rawId) ? rawId : parseInt(rawId)) : Date.now();
+                
                 const customer = {
-                    id: id ? parseInt(id) : Date.now(),
+                    id: parseId,
                     name: document.getElementById('custName').value,
                     gender: document.getElementById('custGender').value,
                     phone: document.getElementById('custPhone').value,
@@ -1653,12 +1655,12 @@
                     status: document.getElementById('custStatus').value,
                     payDate: document.getElementById('custPayDate').value || '',
                     memo: document.getElementById('custMemo').value,
-                    date: id ? (customers.find(x => x.id === parseInt(id)).date || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0],
+                    date: rawId ? (customers.find(x => String(x.id) === String(rawId))?.date || new Date().toISOString().split('T')[0]) : new Date().toISOString().split('T')[0],
                     history: []
                 };
 
-                if (id) {
-                    const index = customers.findIndex(x => x.id === parseInt(id));
+                if (rawId) {
+                    const index = customers.findIndex(x => String(x.id) === String(rawId));
                     const old = customers[index];
                     customer.history = old.history || [];
 
