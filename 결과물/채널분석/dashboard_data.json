@@ -1,5 +1,5 @@
 {
-    "last_updated": "2026-02-24 19:53:44",
+    "last_updated": "2026-02-24 19:57:04",
     "meta_ads": {
         "spend": 0,
         "clicks": 0,
@@ -7,5 +7,41 @@
         "leads": 0,
         "cpa": 0,
         "ctr": 0.0
+    },
+    "naver_blog": {
+        "status": "success",
+        "latest_post": "세관공매, 지금 킹옥션에서 시작해야 하는 타이밍",
+        "posts": [
+            {
+                "title": "세관공매, 지금 킹옥션에서 시작해야 하는 타이밍",
+                "link": "https://blog.naver.com/mentor-king/224178835458?fromRss=true&trackingCode=rss",
+                "date": "Tue, 10 Feb 2026 15:48:08 +0900",
+                "category": "공개강의 일정"
+            },
+            {
+                "title": "세관공매로 수익 만드는 구조｜킹옥션 실전수익반 30기 모집 안내",
+                "link": "https://blog.naver.com/mentor-king/224161096216?fromRss=true&trackingCode=rss",
+                "date": "Tue, 27 Jan 2026 13:50:00 +0900",
+                "category": "공개강의 일정"
+            },
+            {
+                "title": "2026년 인천본부세관 1차 공매 공고",
+                "link": "https://blog.naver.com/mentor-king/224156864424?fromRss=true&trackingCode=rss",
+                "date": "Fri, 23 Jan 2026 11:26:24 +0900",
+                "category": "공매일정"
+            },
+            {
+                "title": "공매 뜻부터 물건이 나오는 이유까지 한 번에 정리",
+                "link": "https://blog.naver.com/mentor-king/224154884842?fromRss=true&trackingCode=rss",
+                "date": "Wed, 21 Jan 2026 18:50:26 +0900",
+                "category": "정보나누기 "
+            },
+            {
+                "title": "세관공매 공고문 처음이라면 이것부터 체크하세요",
+                "link": "https://blog.naver.com/mentor-king/224146577241?fromRss=true&trackingCode=rss",
+                "date": "Wed, 14 Jan 2026 18:04:44 +0900",
+                "category": "킹옥션 세관공매"
+            }
+        ]
     }
 }
