@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>킹옥션 콘텐츠 연구소</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --primary-light: #ff6659;
+            --secondary: #64748b;
+            --bg: #f5f7f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            
+            /* Status Colors */
+            --status-idea: #3b82f6;
+            --status-progress: #f59e0b;
+            --status-done: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* 통계 영역 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-card-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .stat-card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* 칸반 보드 영역 */
+        .board-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .board-column {
+            background: #e2e8f080;
+            border-radius: 1rem;
+            padding: 1rem;
+            min-height: 500px;
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .column-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .column-count {
+            background: var(--card-bg);
+            padding: 0.2rem 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* 카드 UI */
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .tag-blog { background: #03c75a; }
+        .tag-youtube { background: #ff0000; }
+        .tag-insta { background: #e1306c; }
+        .tag-etc { background: var(--secondary); }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 0.75rem;
+        }
+
+        /* 모달창 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            width: 500px;
+            max-width: 95%;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .header button { width: 100%; justify-content: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+            .board-container { grid-template-columns: 1fr; }
+            .board-column { min-height: auto; margin-bottom: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1><i class="fa-solid fa-lightbulb" style="color: var(--status-progress);"></i> 마케팅 콘텐츠 기획 보드</h1>
+            <p>번뜩이는 인사이트를 기록하고, 성공적인 플랫폼 발행까지 관리하세요.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openModal()">
+            <i class="fa-solid fa-plus"></i> 새 아이디어 등록
+        </button>
+    </div>
+
+    <!-- 통계 영역 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-card-title">💡 저장된 아이디어</span>
+            <span class="stat-card-value" id="count-idea" style="color: var(--status-idea);">0</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-card-title">✍️ 제작 진행 중</span>
+            <span class="stat-card-value" id="count-progress" style="color: var(--status-progress);">0</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-card-title">✅ 발행 완료 (누적)</span>
+            <span class="stat-card-value" id="count-done" style="color: var(--status-done);">0</span>
+        </div>
+        <div class="stat-card" style="background: var(--primary); color: white; border: none;">
+            <span class="stat-card-title" style="color: rgba(255,255,255,0.8);">🔥 최다 발행 플랫폼</span>
+            <span class="stat-card-value" style="color: white; font-size: 1.4rem; padding-top: 0.4rem;" id="top-platform">-</span>
+        </div>
+    </div>
+
+    <!-- 칸반 보드 -->
+    <div class="board-container">
+        <!-- 컬럼 1: 아이디어 -->
+        <div class="board-column">
+            <div class="column-header">
+                <div class="column-title"><span style="color: var(--status-idea);">●</span> 아이디어 뱅크</div>
+                <div class="column-count" id="badge-idea">0</div>
+            </div>
+            <div id="col-idea" class="card-list">
+                <!-- 카드 렌더링 영역 -->
+            </div>
+        </div>
+
+        <!-- 컬럼 2: 제작 중 -->
+        <div class="board-column">
+            <div class="column-header">
+                <div class="column-title"><span style="color: var(--status-progress);">●</span> 제작 진행 중</div>
+                <div class="column-count" id="badge-progress">0</div>
+            </div>
+            <div id="col-progress" class="card-list"></div>
+        </div>
+
+        <!-- 컬럼 3: 발행 완료 -->
+        <div class="board-column">
+            <div class="column-header">
+                <div class="column-title"><span style="color: var(--status-done);">●</span> 발행 완료</div>
+                <div class="column-count" id="badge-done">0</div>
+            </div>
+            <div id="col-done" class="card-list"></div>
+        </div>
+    </div>
+
+
+    <!-- 편집/추가 모달 -->
+    <div class="modal-overlay" id="contentModal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="margin-bottom: 1.5rem;">콘텐츠 기획 작성</h2>
+            <form id="contentForm" onsubmit="saveContent(event)">
+                <input type="hidden" id="cardId">
+                
+                <div class="form-group">
+                    <label>진행 상태</label>
+                    <select id="cardStatus" class="form-control">
+                        <option value="idea">💡 아이디어</option>
+                        <option value="progress">✍️ 제작 중</option>
+                        <option value="done">✅ 발행 완료</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>타겟 플랫폼 (채널)</label>
+                    <select id="cardChannel" class="form-control">
+                        <option value="blog">네이버 블로그</option>
+                        <option value="youtube">유튜브 영상/쇼츠</option>
+                        <option value="insta">인스타그램 릴스/피드</option>
+                        <option value="etc">기타/미정</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>콘텐츠 제목 (Hook 포인트)</label>
+                    <input type="text" id="cardTitle" class="form-control" placeholder="예: 첫 경매, 절대로 잃지 않는 1가지 법칙" required>
+                </div>
+
+                <div class="form-group">
+                    <label>기획 핵심 내용 / 메모</label>
+                    <textarea id="cardDesc" class="form-control" rows="4" placeholder="어떤 메시지를 전달할지, 참고할 레퍼런스가 있는지 적어주세요."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: white; border: 1px solid var(--border);" onclick="closeModal()">취소</button>
+                    <button type="button" class="btn" id="deleteBtn" style="background: #fee2e2; color: #dc2626; display: none;" onclick="deleteContent()">삭제</button>
+                    <button type="submit" class="btn btn-primary">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 초기 기본 데이터 셋탑
+        const initialData = [
+            { id: 1, status: 'idea', channel: 'blog', title: '초보자가 실수하기 쉬운 명도 TOP 3', desc: '판례 위주로 풀어서 쓰고 30기 모집 링크 연동할 것', date: '2026-02-24' },
+            { id: 2, status: 'progress', channel: 'youtube', title: '인천세관 공매 현장 브이로그', desc: '이번 주 목요일 촬영본 컷편집 중. 썸네일 자극적으로 뽑기', date: '2026-02-23' },
+            { id: 3, status: 'done', channel: 'insta', title: '경매 전 무조건 체크해야 할 사이트 리스트', desc: '릴스 업로드 완료. 반응 좋으면 블로그로 확장 발행 예정.', date: '2026-02-21' }
+        ];
+
+        let contents = JSON.parse(localStorage.getItem('ka_content_board')) || initialData;
+
+        function saveLocal() {
+            localStorage.setItem('ka_content_board', JSON.stringify(contents));
+        }
+
+        function getChannelBadge(channel) {
+            const map = {
+                'blog': `<span class="tag tag-blog">BLOG</span>`,
+                'youtube': `<span class="tag tag-youtube">YOUTUBE</span>`,
+                'insta': `<span class="tag tag-insta">INSTA</span>`,
+                'etc': `<span class="tag tag-etc">ETC</span>`
+            };
+            return map[channel] || map['etc'];
+        }
+
+        function renderBoard() {
+            const cols = {
+                'idea': document.getElementById('col-idea'),
+                'progress': document.getElementById('col-progress'),
+                'done': document.getElementById('col-done')
+            };
+
+            // 초기화
+            Object.values(cols).forEach(el => el.innerHTML = '');
+
+            contents.sort((a, b) => b.id - a.id).forEach(c => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openModal(c.id);
+                
+                card.innerHTML = `
+                    <div class="card-tags">
+                        ${getChannelBadge(c.channel)}
+                    </div>
+                    <div class="card-title">${c.title}</div>
+                    <div class="card-desc">${c.desc || '메모 없음'}</div>
+                    <div class="card-footer">
+                        <span><i class="fa-regular fa-calendar"></i> ${c.date}</span>
+                    </div>
+                `;
+
+                if (cols[c.status]) {
+                    cols[c.status].appendChild(card);
+                }
+            });
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const counts = { idea: 0, progress: 0, done: 0 };
+            const channels = { blog: 0, youtube: 0, insta: 0, etc: 0 };
+
+            contents.forEach(c => {
+                if(counts[c.status] !== undefined) counts[c.status]++;
+                if(c.status === 'done' && channels[c.channel] !== undefined) channels[c.channel]++;
+            });
+
+            // 스탯 카드 업데이트
+            document.getElementById('count-idea').innerText = counts.idea;
+            document.getElementById('count-progress').innerText = counts.progress;
+            document.getElementById('count-done').innerText = counts.done;
+
+            // 뱃지 업데이트
+            document.getElementById('badge-idea').innerText = counts.idea;
+            document.getElementById('badge-progress').innerText = counts.progress;
+            document.getElementById('badge-done').innerText = counts.done;
+
+            // 최다 플랫폼 계산
+            let topPlatform = '-';
+            let maxCount = 0;
+            const names = { blog: '네이버 블로그', youtube: '유튜브', insta: '인스타그램', etc: '-' };
+            for(let k in channels) {
+                if(channels[k] > maxCount) {
+                    maxCount = channels[k];
+                    topPlatform = names[k];
+                }
+            }
+            document.getElementById('top-platform').innerText = maxCount === 0 ? '-' : topPlatform;
+        }
+
+        // 모달 관리
+        function openModal(id = null) {
+            document.getElementById('contentModal').classList.add('active');
+            const form = document.getElementById('contentForm');
+            const deleteBtn = document.getElementById('deleteBtn');
+            
+            if (id) {
+                const c = contents.find(x => x.id === id);
+                document.getElementById('modalTitle').innerText = '진행 상태 및 내용 수정';
+                document.getElementById('cardId').value = c.id;
+                document.getElementById('cardStatus').value = c.status;
+                document.getElementById('cardChannel').value = c.channel;
+                document.getElementById('cardTitle').value = c.title;
+                document.getElementById('cardDesc').value = c.desc;
+                deleteBtn.style.display = 'block';
+            } else {
+                form.reset();
+                document.getElementById('modalTitle').innerText = '새로운 기획 등록';
+                document.getElementById('cardId').value = '';
+                document.getElementById('cardStatus').value = 'idea';
+                document.getElementById('cardChannel').value = 'blog';
+                deleteBtn.style.display = 'none';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('contentModal').classList.remove('active');
+        }
+
+        function saveContent(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('cardId').value;
+            const id = idVal ? parseInt(idVal) : Date.now();
+
+            const cData = {
+                id: id,
+                status: document.getElementById('cardStatus').value,
+                channel: document.getElementById('cardChannel').value,
+                title: document.getElementById('cardTitle').value,
+                desc: document.getElementById('cardDesc').value,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            if (idVal) {
+                const idx = contents.findIndex(x => x.id === id);
+                // 만약 이전에 완성일자가 아닌데 이번에 완성(done)으로 바뀌면 날짜 최신화
+                if(contents[idx].status !== 'done' && cData.status === 'done') {
+                    cData.date = new Date().toISOString().split('T')[0];
+                } else {
+                    cData.date = contents[idx].date; // 유지
+                }
+                contents[idx] = cData;
+            } else {
+                contents.push(cData);
+            }
+
+            saveLocal();
+            renderBoard();
+            closeModal();
+        }
+
+        function deleteContent() {
+            if(confirm('이 콘텐츠 기획을 완전히 삭제하시겠습니까?')) {
+                const idVal = parseInt(document.getElementById('cardId').value);
+                contents = contents.filter(x => x.id !== idVal);
+                saveLocal();
+                renderBoard();
+                closeModal();
+            }
+        }
+
+        // 오버레이 클릭 시 모달 닫기
+        document.getElementById('contentModal').addEventListener('click', function(e) {
+            if(e.target === this) closeModal();
+        });
+
+        // 초기 시작
+        renderBoard();
+
+    </script>
+</body>
+</html>
