@@ -279,18 +279,18 @@
     <div class="summary-grid">
         <div class="card">
             <div class="card-label">💸 주간 광고 지출액 (Meta)</div>
-            <div class="card-value">250,000원</div>
-            <div class="card-trend trend-red">일 예산 5만원 소진 중</div>
+            <div class="card-value" id="spend-val">로딩 중...</div>
+            <div class="card-trend trend-red">실시간 광고비용 누적</div>
         </div>
         <div class="card">
             <div class="card-label">🎯 신규 획득 단가 (CPA)</div>
-            <div class="card-value">12,500원</div>
-            <div class="card-trend trend-up">지난주 대비 15% 효율 개선</div>
+            <div class="card-value" id="cpa-val">로딩 중...</div>
+            <div class="card-trend trend-up">이번 주 평균 DB 획득당 비용</div>
         </div>
         <div class="card">
             <div class="card-label">👆 광고 클릭률 (CTR)</div>
-            <div class="card-value">3.2%</div>
-            <div class="card-trend trend-up">수익 인증 소재 반응 우수</div>
+            <div class="card-value" id="ctr-val">로딩 중...</div>
+            <div class="card-trend trend-up">총 <span id="clicks-val">0</span>회 클릭 달성</div>
         </div>
         <div class="card" style="border: 2px solid var(--primary-red);">
             <div class="card-label" style="color: var(--primary-red); font-weight: bold;">🔥 30기 모객 달성률</div>
@@ -449,5 +449,44 @@
     </footer>
 </div>
 
+<!-- 실시간 데이터 호출 스크립트 추가 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 데이터 포매터 (천 단위 콤마)
+        const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        
+        // JSON 파일 불러오기 (fetch)
+        fetch('dashboard_data.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const meta = data.meta_ads;
+                
+                // 데이터 삽입
+                if (meta) {
+                    document.getElementById('spend-val').textContent = formatNumber(meta.spend) + '원';
+                    document.getElementById('cpa-val').textContent = formatNumber(meta.cpa) + '원';
+                    document.getElementById('ctr-val').textContent = meta.ctr + '%';
+                    document.getElementById('clicks-val').textContent = formatNumber(meta.clicks);
+                    
+                    // 만약 업데이트 일자가 있으면 날짜 타이틀 갱신
+                    if (data.last_updated) {
+                         document.getElementById('auto-date').innerText = '데이터 기준일: ' + data.last_updated;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                document.getElementById('spend-val').textContent = '데이터 없음';
+                document.getElementById('cpa-val').textContent = '데이터 없음';
+                document.getElementById('ctr-val').textContent = '0%';
+                document.getElementById('auto-date').innerText = '데이터 불러오기 실패 (JSON)';
+            });
+    });
+</script>
 </body>
 </html>
