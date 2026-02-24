@@ -520,6 +520,15 @@
                          document.getElementById('auto-date').innerText = '데이터 기준일: ' + data.last_updated;
                     }
                 }
+
+                // 블로그 데이터 삽입
+                const blog = data.naver_blog;
+                if (blog && blog.status === 'success') {
+                     const blogLatest = document.getElementById('blog-latest-post');
+                     if (blogLatest && blog.posts && blog.posts.length > 0) {
+                         blogLatest.innerHTML = `<a href="${blog.posts[0].link}" target="_blank" style="color: inherit; text-decoration: none;">${blog.posts[0].title}</a>`;
+                     }
+                }
             })
             .catch(error => {
                 console.error('Fetch error:', error);
