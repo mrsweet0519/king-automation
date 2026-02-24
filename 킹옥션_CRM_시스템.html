@@ -706,9 +706,43 @@
                 margin-bottom: 0.5rem;
             }
 
-            td {
-                padding: 1rem;
+            /* 모바일 테이블 카드 뷰 (가독성 최적화) */
+            table { border: 0; width: 100%; }
+            table thead { display: none; }
+            table tr { 
+                display: block; 
+                margin-bottom: 1.5rem; 
+                background: white; 
+                border-radius: 1rem; 
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+                border: 1px solid var(--border);
+                overflow: hidden;
             }
+            table td { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                padding: 1rem; 
+                border-bottom: 1px solid #f1f5f9; 
+                text-align: right; 
+                white-space: normal;
+                gap: 1rem;
+            }
+            table td::before { 
+                content: attr(data-label); 
+                font-size: 0.75rem; 
+                font-weight: 700; 
+                color: var(--text-muted); 
+                text-transform: uppercase; 
+                min-width: 70px;
+                text-align: left;
+            }
+            table td:last-child { border-bottom: 0; background: #fafbfc; justify-content: flex-end; }
+
+            /* 아바타와 사용자 정보 정렬 보정 */
+            td:nth-child(2) .user-info { justify-content: flex-end; width: 100%; text-align: right; flex-direction: row; align-items: center; }
+            td:nth-child(2) .user-details { align-items: flex-end; }
+            td:nth-child(2) .avatar { margin-bottom: 0; margin-left: 0.5rem; }
         }
     </style>
 </head>
@@ -1394,12 +1428,12 @@
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                    <td>
+                    <td data-label="선택">
                         <div class="checkbox-container">
                             <input type="checkbox" class="customer-checkbox" data-id="${c.id}" onclick="updateBatchDeleteBtn()">
                         </div>
                     </td>
-                    <td>
+                    <td data-label="고객정보">
                         <div class="user-info">
                             <div class="avatar">${c.name[0]}</div>
                             <div class="user-details">
@@ -1408,10 +1442,10 @@
                             </div>
                         </div>
                     </td>
-                    <td>${c.path}</td>
-                    <td><span class="badge ${status.class}">${status.text}</span></td>
-                    <td style="color: var(--text-muted); font-size: 0.875rem;">${c.date}</td>
-                    <td>
+                    <td data-label="유입경로">${c.path}</td>
+                    <td data-label="관리단계"><span class="badge ${status.class}">${status.text}</span></td>
+                    <td data-label="업데이트" style="color: var(--text-muted); font-size: 0.875rem;">${c.date}</td>
+                    <td data-label="관리액션">
                         <div class="actions">
                             <button class="btn-icon" title="수정/히스토리" onclick="editCustomer('${c.id}')">✏️</button>
                             <button class="btn-icon" title="삭제" onclick="deleteCustomer('${c.id}')" style="color: var(--danger);">🗑️</button>
@@ -1446,18 +1480,18 @@
                             const tr = document.createElement('tr');
                             tr.style.cssText = "border-bottom: 1px solid var(--border); transition: background 0.2s;";
                             tr.innerHTML = `
-                            <td style="padding: 1rem; font-weight: 600; color: var(--text-main);">
-                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <td data-label="결제자" style="padding: 1rem; font-weight: 600; color: var(--text-main);">
+                                <div style="display: flex; align-items: center; gap: 0.75rem; margin-left: auto;">
                                     <div style="width: 32px; height: 32px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">${c.name[0]}</div>
                                     ${c.name} <span style="font-size: 0.875rem; color: var(--text-muted); margin-left: 0.25rem;" title="${c.gender || '미상'}">${c.gender === '남성' ? '👨' : (c.gender === '여성' ? '👩' : '❔')}</span>
                                 </div>
                             </td>
-                            <td style="padding: 1rem; color: var(--text-muted);">${c.phone || '-'}</td>
-                            <td style="padding: 1rem;">
+                            <td data-label="연락처" style="padding: 1rem; color: var(--text-muted);">${c.phone || '-'}</td>
+                            <td data-label="결제일/경로" style="padding: 1rem;">
                                 <div style="font-weight: 500;">${dispDate}</div>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">${c.path}</div>
                             </td>
-                            <td style="padding: 1rem; color: var(--text-muted); font-size: 0.875rem;">
+                            <td data-label="특이사항" style="padding: 1rem; color: var(--text-muted); font-size: 0.875rem; background: #fafbfc;">
                                 ${c.memo.substring(0, 100)}${c.memo.length > 100 ? '...' : ''}
                             </td>
                         `;
