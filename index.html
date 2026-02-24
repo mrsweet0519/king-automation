@@ -1,301 +1,543 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>킹옥션 자동화 포털</title>
-    <!-- 폰트어썸 (아이콘용) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>킹옥션 통합 ERP 통제실</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-red: #e60012;
-            --primary-yellow: #ffcc00;
-            --dark-bg: #111111;
-            --light-bg: #f5f7fb;
-            --white: #ffffff;
-            --gray: #888888;
-            --text-main: #333333;
+            /* 기업형 ERP 다크 테마 컬러 */
+            --sidebar-bg: #1a1e29;
+            --sidebar-hover: #2c3245;
+            --sidebar-active: #3a4259;
+            --text-main: #ffffff;
+            --text-muted: #8b95a5;
+            
+            /* 탑바 및 배경 */
+            --topbar-bg: #ffffff;
+            --topbar-border: #e2e8f0;
+            --main-bg: #f5f7f9;
+            
+            /* 킹옥션 브랜드 컬러 */
+            --brand-primary: #d32f2f;
+            --brand-secondary: #ff5252;
+            
+            /* 레이아웃 크기 */
+            --sidebar-width: 240px;
+            --topbar-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
-            font-family: 'Pretendard', 'Malgun Gothic', Tahoma, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--main-bg);
+        }
+
+        /* ----- 사이드바 (좌측 메뉴) ----- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100%;
+            background-color: var(--sidebar-bg);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            transition: all 0.3s ease;
+            z-index: 1000;
         }
 
-        /* 스마트폰 앱 느낌의 상단 헤더 */
-        header {
-            background: var(--dark-bg);
-            color: var(--white);
-            padding: 20px 20px 30px;
-            text-align: center;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            position: relative;
+        .sidebar-header {
+            height: var(--topbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .logo-text {
-            font-size: 24px;
-            font-weight: 900;
-            margin: 0;
-            letter-spacing: -0.5px;
+        .sidebar-header h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .logo-text span {
-            color: var(--primary-red);
+        .sidebar-header h1 i {
+            color: var(--brand-secondary);
         }
 
-        .sub-text {
-            font-size: 13px;
-            color: #aaaaaa;
-            margin-top: 5px;
+        /* 스크롤 가능한 메뉴 영역 */
+        .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 0;
         }
 
-        .user-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-top: 15px;
-            color: var(--primary-yellow);
+        /* 스크롤바 커스텀 */
+        .sidebar-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .menu-group {
+            margin-bottom: 20px;
+        }
+
+        .menu-group-title {
+            padding: 0 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
             font-weight: 600;
         }
 
-        /* 메인 콘텐츠 영역 (버튼들) */
-        .container {
-            flex: 1;
-            padding: 30px 20px;
-            max-width: 900px;
-            /* PC, 모바일 모두 대응 */
-            margin: -20px auto 0;
-            width: 100%;
-            box-sizing: border-box;
-            position: relative;
-            z-index: 10;
-        }
-
-        .menu-title {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            color: var(--dark-bg);
-        }
-
-        .button-grid {
-            display: grid;
-            gap: 15px;
-            grid-template-columns: 1fr;
-        }
-
-        /* PC 화면용 그리드 */
-        @media (min-width: 768px) {
-            .button-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .container {
-                margin: -40px auto 0;
-            }
-
-            header {
-                padding: 40px 20px 60px;
-            }
-
-            .logo-text {
-                font-size: 32px;
-            }
-
-            .sub-text {
-                font-size: 15px;
-            }
-        }
-
-        /* 개별 버튼 스타일 */
-        .app-btn {
+        .menu-item {
+            padding: 12px 20px;
             display: flex;
             align-items: center;
-            background: var(--white);
-            padding: 20px;
-            border-radius: 20px;
+            gap: 15px;
+            color: var(--text-muted);
             text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: var(--sidebar-hover);
             color: var(--text-main);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-            box-sizing: border-box;
         }
 
-        .app-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        .menu-item.active {
+            background-color: var(--sidebar-active);
+            color: var(--text-main);
+            border-left-color: var(--brand-secondary);
+            font-weight: 600;
         }
 
-        .app-btn:active {
-            transform: scale(0.98);
-            background: #f8f9fa;
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
         }
 
-        .icon-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
+        /* 하단 유저 정보 */
+        .sidebar-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--sidebar-active);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-right: 15px;
-            color: var(--white);
-            flex-shrink: 0;
+            font-weight: bold;
+            color: var(--brand-secondary);
         }
 
-        .bg-red {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+        .user-info {
+            display: flex;
+            flex-direction: column;
         }
 
-        .bg-blue {
-            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
-        .bg-dark {
-            background: linear-gradient(135deg, #434343, #000000);
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
-        .bg-green {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
+        /* ----- 메인 컨텐츠 영역 ----- */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* flex 버그 방지 */
         }
 
-        .btn-text h3 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            font-weight: 800;
+        /* 상단 네비게이션 바 */
+        .topbar {
+            height: var(--topbar-height);
+            background-color: var(--topbar-bg);
+            border-bottom: 1px solid var(--topbar-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        .btn-text p {
-            margin: 0;
-            font-size: 12px;
-            color: var(--gray);
-            line-height: 1.4;
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .arrow-icon {
-            margin-left: auto;
-            color: #cccccc;
-            font-size: 14px;
+        /* 모바일용 햄버거 메뉴 */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #333;
+            cursor: pointer;
         }
 
-        /* 하단 푸터 */
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            font-size: 12px;
-            color: var(--gray);
-            background: transparent;
+        .current-page-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1e29;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-    </style>
-    <script>
-        // 컴퓨터(로컬)와 폰(깃허브웹)의 폴더 구조 차이를 똑똑하게 감지하여 경로를 변경
-        function smartNav(type) {
-            const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-            if (type === 'crm') {
-                if (isLocal) {
-                    window.location.href = '../고객관리/킹옥션_CRM_시스템.html';
-                } else {
-                    window.location.href = '킹옥션_CRM_시스템.html';
-                }
-            } else if (type === 'marketing') {
-                // 마케팅은 컴퓨터에선 '채널분석' 상위 폴더에 있고, 폰에선 한군데 모아둠
-                if (isLocal) {
-                    window.location.href = '../채널분석/킹옥션_마케팅_통합_대시보드.html';
-                } else {
-                    window.location.href = '킹옥션_마케팅_통합_대시보드.html';
-                }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #64748b;
+        }
+
+        .real-time-clock {
+            font-size: 0.9rem;
+            font-weight: 500;
+            background-color: #f1f5f9;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-icon {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .action-icon:hover {
+            color: var(--brand-primary);
+        }
+
+        /* 아이프레임 컨테이너 */
+        .content-container {
+            flex: 1;
+            position: relative;
+            background-color: var(--main-bg);
+            padding: 20px;
+            overflow: hidden; /* iframe 스크롤에 맡김 */
+        }
+        
+        .app-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: transparent;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: none; /* 기본 보이지 않음 */
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .app-iframe.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 로딩 애니메이션 */
+        .loader-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(245, 247, 249, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        
+        .loader-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(211, 47, 47, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--brand-primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 반응형 (모바일/태블릿) */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                /* 사이드바 메뉴 열릴 때 애니메이션 */
+            }
+            
+            .sidebar.open {
+                left: 0;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+            
+            .real-time-clock span {
+                display: none; /* 모바일에서는 시계 아이콘만 표시 */
+            }
+            
+            .content-container {
+                padding: 10px;
             }
         }
-    </script>
+        
+        /* 사이드바 오버레이 (모바일용 배경 어둡게) */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+    </style>
 </head>
-
 <body>
 
-    <header>
-        <h1 class="logo-text">킹옥션 <span>통합관리시스템</span></h1>
-        <div class="sub-text">한국세관공매 전문 교육기관 전용</div>
-        <div class="user-badge"><i class="fa-solid fa-crown"></i> Admin Access</div>
-    </header>
+    <!-- 모바일용 사이드바 오버레이 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <div class="container">
-        <div class="menu-title">⚡ 빠른 실행</div>
-        <div class="button-grid">
-
-            <!-- CRM 고객관리 버튼 -->
-            <a href="#" onclick="smartNav('crm'); return false;" class="app-btn">
-                <div class="icon-box bg-blue">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-                <div class="btn-text">
-                    <h3>CRM 고객 관리</h3>
-                    <p>신규 고객 등록, 대화 히스토리 및<br>기수별 명단 보관함 (PC/모바일)</p>
-                </div>
-                <div class="arrow-icon"><i class="fa-solid fa-chevron-right"></i></div>
-            </a>
-
-            <!-- 마케팅 대시보드 버튼 -->
-            <a href="#" onclick="smartNav('marketing'); return false;" class="app-btn">
-                <div class="icon-box bg-red">
-                    <i class="fa-solid fa-chart-line"></i>
-                </div>
-                <div class="btn-text">
-                    <h3>마케팅 통합 대시보드</h3>
-                    <p>인스타/유튜브 광고 비용 추적 및<br>채널별 실시간 전환율 분석</p>
-                </div>
-                <div class="arrow-icon"><i class="fa-solid fa-chevron-right"></i></div>
-            </a>
-
-            <!-- 세관공매 물건 분석 (예시용, 추후 확장을 위해) -->
-            <a href="#" class="app-btn" onclick="alert('데이터 연동 준비 중입니다.'); return false;">
-                <div class="icon-box bg-dark">
-                    <i class="fa-solid fa-box-open"></i>
-                </div>
-                <div class="btn-text">
-                    <h3>세관공매 수익 분석 <span
-                            style="font-size:10px; background:#eee; padding:2px 5px; border-radius:5px; color:#888;">준비중</span>
-                    </h3>
-                    <p>수입 화물 및 압류품 원가/수익률 계산</p>
-                </div>
-                <div class="arrow-icon"><i class="fa-solid fa-chevron-right"></i></div>
-            </a>
-
-            <!-- 구글 드라이브 자료실 직행 -->
-            <a href="https://drive.google.com/drive/folders/1B3jX0R5fP4M9Z-y082D5C8D-U4c_rM2e" target="_blank"
-                class="app-btn">
-                <div class="icon-box bg-green">
-                    <i class="fa-brands fa-google-drive"></i>
-                </div>
-                <div class="btn-text">
-                    <h3>그래비티 클라우드</h3>
-                    <p>결과물, 콘텐츠 원본, 자동화 스크립트<br>구글 드라이브 폴더 열기</p>
-                </div>
-                <div class="arrow-icon"><i class="fa-solid fa-external-link-alt" style="font-size: 12px;"></i></div>
-            </a>
-
+    <!-- 좌측 사이드바 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1><i class="fa-solid fa-crown"></i> 킹옥션 통합 ERP</h1>
         </div>
-    </div>
+        
+        <div class="sidebar-menu">
+            <!-- 그룹 1: 마케팅/CRM 영역 -->
+            <div class="menu-group">
+                <div class="menu-group-title">Marketing & CRM</div>
+                
+                <a class="menu-item active" data-target="dashboard" data-title="마케팅 통합 대시보드" data-url="../채널분석/킹옥션_마케팅_통합_대시보드.html">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>마케팅 대시보드</span>
+                </a>
+                
+                <a class="menu-item" data-target="crm" data-title="고객 관리 시스템 (CRM)" data-url="../고객관리/킹옥션_CRM_시스템.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>고객 관리 (CRM)</span>
+                </a>
+            </div>
 
-    <footer>
-        © 2026 KING AUCTION x GRAVITY AI<br>
-        All Systems Operational.
-    </footer>
 
+            
+             <!-- 하단: 설정 영역 -->
+             <div class="menu-group" style="margin-top: auto;">
+                <div class="menu-group-title">시스템</div>
+                <a class="menu-item" onclick="alert('시스템 설정 권한이 필요합니다.')">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>환경 설정</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 하단 유저 프로필 -->
+        <div class="sidebar-footer">
+            <div class="user-avatar">킹</div>
+            <div class="user-info">
+                <span class="user-name">대표님</span>
+                <span class="user-role">최고 관리자 (Admin)</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 우측 메인 영역 -->
+    <main class="main-wrapper">
+        <!-- 상단바 -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="current-page-title" id="pageTitle">
+                    <i class="fa-solid fa-chart-line" style="color: var(--brand-primary);"></i>
+                    <span>마케팅 통합 대시보드</span>
+                </div>
+            </div>
+            
+            <div class="topbar-right">
+                <div class="real-time-clock">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="currentTime">00:00:00</span>
+                </div>
+                <i class="fa-solid fa-bell action-icon" title="알림"></i>
+                <i class="fa-solid fa-expand action-icon" id="fullscreenToggle" title="전체화면"></i>
+            </div>
+        </header>
+
+        <!-- 아이프레임 컨테이너 (실제 화면들이 로드되는 곳) -->
+        <div class="content-container">
+            <div class="loader-overlay" id="loader">
+                <div class="spinner"></div>
+            </div>
+            
+            <!-- 앱 컨테이너들 -->
+            <iframe id="iframe-dashboard" class="app-iframe active" src="../채널분석/킹옥션_마케팅_통합_대시보드.html" title="마케팅 대시보드"></iframe>
+            <iframe id="iframe-crm" class="app-iframe" src="" title="고객관리 시스템"></iframe>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ----- 실시간 시계 로직 -----
+            const clockEl = document.getElementById('currentTime');
+            function updateClock() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                clockEl.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // ----- 메뉴 탭 전환 로직 (SPA처럼 작동하게 만들기) -----
+            const menuItems = document.querySelectorAll('.menu-item[data-target]');
+            const pageTitleEl = document.getElementById('pageTitle').querySelector('span');
+            const pageTitleIcon = document.getElementById('pageTitle').querySelector('i');
+            const loader = document.getElementById('loader');
+
+            // 한 번 로드된 iframe은 다시 로드하지 않기 위해 추적
+            const loadedIframes = {
+                'dashboard': true // 처음에 이미 로드되어 있음
+            };
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 이미 활성화된 탭이면 무시
+                    if (this.classList.contains('active')) return;
+
+                    // 1. 메뉴 스타일 변경
+                    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // 2. 상단바 타이틀 변경
+                    pageTitleEl.textContent = this.getAttribute('data-title');
+                    pageTitleIcon.className = this.querySelector('i').className;
+                    pageTitleIcon.style.color = 'var(--brand-primary)';
+
+                    const targetId = this.getAttribute('data-target');
+                    const targetUrl = this.getAttribute('data-url');
+                    const targetIframe = document.getElementById(`iframe-${targetId}`);
+
+                    // 3. 로더 띄우기 및 화면 전환
+                    loader.classList.add('show');
+                    
+                    document.querySelectorAll('.app-iframe').forEach(iframe => {
+                        iframe.classList.remove('active');
+                    });
+
+                    // 처음 누르는 탭인 경우 src 할당
+                    if (!loadedIframes[targetId]) {
+                        targetIframe.src = targetUrl;
+                        
+                        // 로드 완료되면 로더 제거하고 화면 보이기
+                        targetIframe.onload = function() {
+                            loadedIframes[targetId] = true;
+                            loader.classList.remove('show');
+                            targetIframe.classList.add('active');
+                        };
+                    } else {
+                        // 이미 로드된 경우 바로 띄우기 (약간의 딜레이로 부드럽게)
+                        setTimeout(() => {
+                            loader.classList.remove('show');
+                            targetIframe.classList.add('active');
+                        }, 200);
+                    }
+
+                    // 모바일 환경이면 클릭 후 사이드바 닫기
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // ----- 모바일 사이드바 토글 로직 -----
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const menuToggleBtn = document.getElementById('menuToggle');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('open');
+                sidebarOverlay.classList.toggle('show');
+            }
+
+            menuToggleBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // ----- 전체화면 토글 로직 -----
+            const fullscreenBtn = document.getElementById('fullscreenToggle');
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                    });
+                    fullscreenBtn.classList.remove('fa-expand');
+                    fullscreenBtn.classList.add('fa-compress');
+                } else {
+                    document.exitFullscreen();
+                    fullscreenBtn.classList.remove('fa-compress');
+                    fullscreenBtn.classList.add('fa-expand');
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>
