@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +40,7 @@
             background: var(--white);
             padding: 20px 30px;
             border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .logo-area h1 {
@@ -75,7 +76,7 @@
             background: var(--white);
             padding: 25px;
             border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease;
         }
 
@@ -103,8 +104,13 @@
             font-weight: bold;
         }
 
-        .trend-up { color: var(--success); }
-        .trend-red { color: var(--primary-red); }
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-red {
+            color: var(--primary-red);
+        }
 
         /* 대시보드 메인 레이아웃 */
         .main-grid {
@@ -117,7 +123,7 @@
             background: var(--white);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .section-title {
@@ -158,9 +164,20 @@
             font-weight: bold;
         }
 
-        .bg-green { background: #e6f4ea; color: #1e7e34; }
-        .bg-red { background: #fce8e6; color: #d93025; }
-        .bg-blue { background: #e8f0fe; color: #1967d2; }
+        .bg-green {
+            background: #e6f4ea;
+            color: #1e7e34;
+        }
+
+        .bg-red {
+            background: #fce8e6;
+            color: #d93025;
+        }
+
+        .bg-blue {
+            background: #e8f0fe;
+            color: #1967d2;
+        }
 
         /* 채널 링크 버튼 */
         .channel-btn {
@@ -233,311 +250,384 @@
 
         /* 모바일 반응형 (Media Query) */
         @media (max-width: 768px) {
-            .container { padding: 15px 10px; }
+            .container {
+                padding: 15px 10px;
+            }
+
             header {
-                flex-direction: column; align-items: flex-start; gap: 10px; padding: 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 15px;
             }
+
             .main-grid {
-                grid-template-columns: 1fr; /* 모바일에서는 1열로 떨어지도록 수정 */
+                grid-template-columns: 1fr;
+                /* 모바일에서는 1열로 떨어지도록 수정 */
             }
+
             .summary-grid {
                 grid-template-columns: 1fr 1fr;
             }
         }
+
         @media (max-width: 480px) {
             .summary-grid {
                 grid-template-columns: 1fr;
             }
-            .logo-area h1 { font-size: 20px; }
-            .card-value { font-size: 24px; }
-        }
 
+            .logo-area h1 {
+                font-size: 20px;
+            }
+
+            .card-value {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <!-- 헤더 -->
-    <header>
-        <div class="logo-area">
-            <h1>킹옥션 <span>마케팅 통합 대시보드</span></h1>
-        </div>
-        <div class="date-badge" id="auto-date">데이터 기준일: 로딩 중...</div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var today = new Date();
-                var yyyy = today.getFullYear();
-                var mm = String(today.getMonth() + 1).padStart(2, '0');
-                var dd = String(today.getDate()).padStart(2, '0');
-                document.getElementById('auto-date').innerText = '데이터 기준일: ' + yyyy + '-' + mm + '-' + dd;
-            });
-        </script>
-    </header>
-
-    <!-- 요약 카드 -->
-    <!-- 요약 카드 (퍼포먼스 마케팅 중심) -->
-    <div class="summary-grid">
-        <div class="card">
-            <div class="card-label">💸 주간 광고 지출액 (Meta)</div>
-            <div class="card-value" id="spend-val">로딩 중...</div>
-            <div class="card-trend trend-red">실시간 광고비용 누적</div>
-        </div>
-        <div class="card">
-            <div class="card-label">🎯 신규 획득 단가 (CPA)</div>
-            <div class="card-value" id="cpa-val">로딩 중...</div>
-            <div class="card-trend trend-up">이번 주 평균 DB 획득당 비용</div>
-        </div>
-        <div class="card">
-            <div class="card-label">👆 광고 클릭률 (CTR)</div>
-            <div class="card-value" id="ctr-val">로딩 중...</div>
-            <div class="card-trend trend-up">총 <span id="clicks-val">0</span>회 클릭 달성</div>
-        </div>
-        <div class="card" style="border: 2px solid var(--primary-red);">
-            <div class="card-label" style="color: var(--primary-red); font-weight: bold;">🔥 30기 모객 달성률</div>
-            <div class="card-value">1 / 30명</div>
-            <div style="width: 100%; background: #eee; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden;">
-                <div style="width: 3.3%; height: 100%; background: var(--primary-red);"></div>
+    <div class="container">
+        <!-- 헤더 -->
+        <header>
+            <div class="logo-area">
+                <h1>킹옥션 <span>마케팅 통합 대시보드</span></h1>
             </div>
-            <div class="card-trend" style="margin-top: 5px; color: var(--primary-red);">목표까지 29명 남음 🏃‍♂️</div>
+            <div class="date-badge" id="auto-date">데이터 기준일: 로딩 중...</div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    var today = new Date();
+                    var yyyy = today.getFullYear();
+                    var mm = String(today.getMonth() + 1).padStart(2, '0');
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    document.getElementById('auto-date').innerText = '데이터 기준일: ' + yyyy + '-' + mm + '-' + dd;
+                });
+            </script>
+        </header>
+
+        <!-- 요약 카드 -->
+        <!-- 요약 카드 (퍼포먼스 마케팅 중심) -->
+        <div class="summary-grid">
+            <div class="card">
+                <div class="card-label">💸 주간 광고 지출액 (Meta)</div>
+                <div class="card-value" id="spend-val">로딩 중...</div>
+                <div class="card-trend trend-red">실시간 광고비용 누적</div>
+            </div>
+            <div class="card">
+                <div class="card-label">🎯 신규 획득 단가 (CPA)</div>
+                <div class="card-value" id="cpa-val">로딩 중...</div>
+                <div class="card-trend trend-up">이번 주 평균 DB 획득당 비용</div>
+            </div>
+            <div class="card">
+                <div class="card-label">👆 광고 클릭률 (CTR)</div>
+                <div class="card-value" id="ctr-val">로딩 중...</div>
+                <div class="card-trend trend-up">총 <span id="clicks-val">0</span>회 클릭 달성</div>
+            </div>
+            <div class="card" style="border: 2px solid var(--primary-red);">
+                <div class="card-label" style="color: var(--primary-red); font-weight: bold;">🔥 30기 모객 달성률</div>
+                <div class="card-value">1 / 30명</div>
+                <div
+                    style="width: 100%; background: #eee; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden;">
+                    <div style="width: 3.3%; height: 100%; background: var(--primary-red);"></div>
+                </div>
+                <div class="card-trend" style="margin-top: 5px; color: var(--primary-red);">목표까지 29명 남음 🏃‍♂️</div>
+            </div>
         </div>
+
+        <!-- 메인 그리드 -->
+        <div class="main-grid">
+            <!-- 채널별 현황 테이블 -->
+            <div class="section-box">
+                <div class="section-title">채널별 실시간 상태</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>채널명</th>
+                            <th>상태</th>
+                            <th>최신 캠페인</th>
+                            <th>이동</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>유튜브</b></td>
+                            <td><span class="status-badge bg-green">급상승</span></td>
+                            <td>3월 공개강의</td>
+                            <td><a href="https://www.youtube.com/@kingauction_go" target="_blank"
+                                    class="channel-btn">이동</a></td>
+                        </tr>
+                        <tr>
+                            <td><b>인스타그램</b></td>
+                            <td><span class="status-badge bg-green">정상</span></td>
+                            <td>30기 모집</td>
+                            <td><a href="https://www.instagram.com/kingauction_go" target="_blank"
+                                    class="channel-btn">이동</a></td>
+                        </tr>
+                        <tr>
+                            <td><b>홈페이지 1</b></td>
+                            <td><span class="status-badge bg-green">정상</span></td>
+                            <td>3월 공지완료</td>
+                            <td><a href="http://www.kingauction.co.kr/" target="_blank" class="channel-btn">이동</a></td>
+                        </tr>
+                        <tr>
+                            <td><b>홈페이지 2</b></td>
+                            <td><span class="status-badge bg-blue">수정완료</span></td>
+                            <td>3월 전환완료</td>
+                            <td><a href="http://kingauctionschool.co.kr/" target="_blank" class="channel-btn">이동</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>블로그</b></td>
+                            <td><span class="status-badge bg-green">양호</span></td>
+                            <td>브랜딩 최적화</td>
+                            <td><a href="https://blog.naver.com/mentor-king" target="_blank" class="channel-btn">이동</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 인스타 광고 ➡️ CRM 퍼널 분석 -->
+            <div class="section-box">
+                <div class="section-title">인스타그램 광고 ➡️ CRM 획득 퍼널</div>
+                <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: var(--gray);">1. 광고 노출 (스폰서드)</span>
+                                <span style="color: var(--gray);">15,300회</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">
+                                    100%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: #1967d2;">2. 링크 클릭 (유입)</span>
+                                <span style="color: #1967d2;">490명</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 3.2%; height: 100%; background: #1967d2; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
+                                    3.2%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: var(--primary-red);">3. CRM 신규 DB 획득</span>
+                                <span style="color: var(--primary-red);">20명</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 4.08%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
+                                    4.1%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
+                        * 🚨 클릭 ➡️ DB 전환율 저하 (목표 10%), 랜딩페이지 긴급 점검 요망
+                    </div>
+                </div>
+            </div>
+
+            <!-- 유튜브 광고 ➡️ CRM 퍼널 분석 -->
+            <div class="section-box">
+                <div class="section-title">유튜브 광고(Google Ads) ➡️ CRM 획득 퍼널</div>
+                <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: var(--gray);">1. 광고 노출 (조회수/Imp)</span>
+                                <span style="color: var(--gray);" id="yt_impressions">42,500회</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">
+                                    100%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: #ff0000;">2. 영상 내 링크 클릭 (유입)</span>
+                                <span style="color: #ff0000;" id="yt_clicks">850명</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 2.0%; height: 100%; background: #ff0000; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
+                                    2.0%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: var(--primary-red);">3. CRM 신규 DB 획득</span>
+                                <span style="color: var(--primary-red);" id="yt_leads">68명</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 8.0%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
+                                    8.0%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
+                        * 💡 유튜브 쇼츠(Shorts) 광고비용/전환율 연동 API 모니터링 중입니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 네이버 블로그 ➡️ 오가닉(자연유입) 분석 -->
+            <div class="section-box">
+                <div class="section-title">네이버 블로그 (오가닉) ➡️ 핵심 인사이트</div>
+                <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #dcfce7;">
+                            <div style="font-size: 12px; color: #166534; font-weight: bold; margin-bottom: 5px;">📈 이번 달
+                                누적 방문자</div>
+                            <div style="font-size: 20px; font-weight: 900; color: #03c75a;">12,450 명</div>
+                        </div>
+                        <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #dcfce7;">
+                            <div style="font-size: 12px; color: #166534; font-weight: bold; margin-bottom: 5px;">🔥 이달의
+                                효자 포스팅</div>
+                            <div id="blog-latest-post"
+                                style="font-size: 14px; font-weight: 700; color: #03c75a; display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                로딩 중...</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: var(--gray);">1. 자연 유입 검색 (조회수)</span>
+                                <span style="color: var(--gray);">14,500회</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">
+                                    100%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+                                <span style="color: #03c75a;">2. 블로그 내 링크 클릭 (카페/CRM 이동)</span>
+                                <span style="color: #03c75a;">1,120명</span>
+                            </div>
+                            <div
+                                style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
+                                <div
+                                    style="width: 7.7%; height: 100%; background: #03c75a; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
+                                    7.7%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
+                        * 💡 추후 블로그 콘텐츠 관리 봇을 통해 자동 스크래핑 반영 예정입니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 정이사 코멘트 하단 바 -->
+        <div class="jung-comment">
+            <h3>🚩 정이사(COO)의 주간 마케팅 작전 지시</h3>
+            <div class="comment-text">
+                대표님, 인스타그램 릴스 광고(A안: 부동산 수익 인증)의 클릭률(CTR 3.2%)이 나쁘지 않으나, <b>클릭 후 CRM 폼 작성으로 이어지는 최종 전환율이 4.1%로
+                    저조</b>합니다.<br>
+                이번 주 최우선 과제는 <b>'리타겟팅 광고'</b>를 즉시 가동하여 한 번 클릭하고 나간 470명에게 <b>'마감 임박'</b> 메시지로 맹추격하는 것입니다.
+            </div>
+            <ul class="action-list">
+                <li>✔️ 인스타그램 릴스 A/B 테스트 (2030 영끌타겟 vs 4050 은퇴타겟) 예산 50% 분배</li>
+                <li>✔️ 블로그 및 랜딩페이지 이탈자 대상 '리타겟팅(Retargeting) 광고' 즉각 세팅</li>
+                <li>✔️ CRM DB가 '신규 수집'으로 들어오면 1시간 내 속전속결 해피콜 공격 진행</li>
+            </ul>
+        </div>
+
+        <footer
+            style="text-align: center; margin-top: 40px; color: var(--gray); font-size: 12px; padding-bottom: 50px;">
+            © 2026 킹옥션 한국세관공매 & 안티그래비티 파트너(정이사) 협업 시스템
+        </footer>
     </div>
 
-    <!-- 메인 그리드 -->
-    <div class="main-grid">
-        <!-- 채널별 현황 테이블 -->
-        <div class="section-box">
-            <div class="section-title">채널별 실시간 상태</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>채널명</th>
-                        <th>상태</th>
-                        <th>최신 캠페인</th>
-                        <th>이동</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b>유튜브</b></td>
-                        <td><span class="status-badge bg-green">급상승</span></td>
-                        <td>3월 공개강의</td>
-                        <td><a href="https://www.youtube.com/@kingauction_go" target="_blank" class="channel-btn">이동</a></td>
-                    </tr>
-                    <tr>
-                        <td><b>인스타그램</b></td>
-                        <td><span class="status-badge bg-green">정상</span></td>
-                        <td>30기 모집</td>
-                        <td><a href="https://www.instagram.com/kingauction_go" target="_blank" class="channel-btn">이동</a></td>
-                    </tr>
-                    <tr>
-                        <td><b>홈페이지 1</b></td>
-                        <td><span class="status-badge bg-green">정상</span></td>
-                        <td>3월 공지완료</td>
-                        <td><a href="http://www.kingauction.co.kr/" target="_blank" class="channel-btn">이동</a></td>
-                    </tr>
-                    <tr>
-                        <td><b>홈페이지 2</b></td>
-                        <td><span class="status-badge bg-blue">수정완료</span></td>
-                        <td>3월 전환완료</td>
-                        <td><a href="http://kingauctionschool.co.kr/" target="_blank" class="channel-btn">이동</a></td>
-                    </tr>
-                    <tr>
-                        <td><b>블로그</b></td>
-                        <td><span class="status-badge bg-green">양호</span></td>
-                        <td>브랜딩 최적화</td>
-                        <td><a href="https://blog.naver.com/mentor-king" target="_blank" class="channel-btn">이동</a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <!-- 실시간 데이터 호출 스크립트 추가 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 데이터 포매터 (천 단위 콤마)
+            const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-        <!-- 인스타 광고 ➡️ CRM 퍼널 분석 -->
-        <div class="section-box">
-            <div class="section-title">인스타그램 광고 ➡️ CRM 획득 퍼널</div>
-            <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: var(--gray);">1. 광고 노출 (스폰서드)</span>
-                            <span style="color: var(--gray);">15,300회</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">100%</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: #1967d2;">2. 링크 클릭 (유입)</span>
-                            <span style="color: #1967d2;">490명</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 3.2%; height: 100%; background: #1967d2; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">3.2%</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: var(--primary-red);">3. CRM 신규 DB 획득</span>
-                            <span style="color: var(--primary-red);">20명</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 4.08%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">4.1%</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
-                    * 🚨 클릭 ➡️ DB 전환율 저하 (목표 10%), 랜딩페이지 긴급 점검 요망
-                </div>
-            </div>
-        </div>
-
-        <!-- 유튜브 광고 ➡️ CRM 퍼널 분석 -->
-        <div class="section-box">
-            <div class="section-title">유튜브 광고(Google Ads) ➡️ CRM 획득 퍼널</div>
-            <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: var(--gray);">1. 광고 노출 (조회수/Imp)</span>
-                            <span style="color: var(--gray);" id="yt_impressions">42,500회</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">100%</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: #ff0000;">2. 영상 내 링크 클릭 (유입)</span>
-                            <span style="color: #ff0000;" id="yt_clicks">850명</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 2.0%; height: 100%; background: #ff0000; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">2.0%</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: var(--primary-red);">3. CRM 신규 DB 획득</span>
-                            <span style="color: var(--primary-red);" id="yt_leads">68명</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 8.0%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">8.0%</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
-                    * 💡 유튜브 쇼츠(Shorts) 광고비용/전환율 연동 API 모니터링 중입니다.
-                </div>
-            </div>
-        </div>
-
-        <!-- 네이버 블로그 ➡️ 오가닉(자연유입) 분석 -->
-        <div class="section-box">
-            <div class="section-title">네이버 블로그 (오가닉) ➡️ 핵심 인사이트</div>
-            <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                    <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #dcfce7;">
-                        <div style="font-size: 12px; color: #166534; font-weight: bold; margin-bottom: 5px;">📈 이번 달 누적 방문자</div>
-                        <div style="font-size: 20px; font-weight: 900; color: #03c75a;">12,450 명</div>
-                    </div>
-                    <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #dcfce7;">
-                        <div style="font-size: 12px; color: #166534; font-weight: bold; margin-bottom: 5px;">🔥 이달의 효자 포스팅</div>
-                        <div style="font-size: 14px; font-weight: 700; color: #03c75a; display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">인천세관공매 아반떼CN7 500만원 낙찰 후기</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: var(--gray);">1. 자연 유입 검색 (조회수)</span>
-                            <span style="color: var(--gray);">14,500회</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 100%; height: 100%; background: #aaaaaa; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-size: 12px;">100%</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                            <span style="color: #03c75a;">2. 블로그 내 링크 클릭 (카페/CRM 이동)</span>
-                            <span style="color: #03c75a;">1,120명</span>
-                        </div>
-                        <div style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                            <div style="width: 7.7%; height: 100%; background: #03c75a; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">7.7%</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
-                    * 💡 추후 블로그 콘텐츠 관리 봇을 통해 자동 스크래핑 반영 예정입니다.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 정이사 코멘트 하단 바 -->
-    <div class="jung-comment">
-        <h3>🚩 정이사(COO)의 주간 마케팅 작전 지시</h3>
-        <div class="comment-text">
-            대표님, 인스타그램 릴스 광고(A안: 부동산 수익 인증)의 클릭률(CTR 3.2%)이 나쁘지 않으나, <b>클릭 후 CRM 폼 작성으로 이어지는 최종 전환율이 4.1%로 저조</b>합니다.<br>
-            이번 주 최우선 과제는 <b>'리타겟팅 광고'</b>를 즉시 가동하여 한 번 클릭하고 나간 470명에게 <b>'마감 임박'</b> 메시지로 맹추격하는 것입니다.
-        </div>
-        <ul class="action-list">
-            <li>✔️ 인스타그램 릴스 A/B 테스트 (2030 영끌타겟 vs 4050 은퇴타겟) 예산 50% 분배</li>
-            <li>✔️ 블로그 및 랜딩페이지 이탈자 대상 '리타겟팅(Retargeting) 광고' 즉각 세팅</li>
-            <li>✔️ CRM DB가 '신규 수집'으로 들어오면 1시간 내 속전속결 해피콜 공격 진행</li>
-        </ul>
-    </div>
-
-    <footer style="text-align: center; margin-top: 40px; color: var(--gray); font-size: 12px; padding-bottom: 50px;">
-        © 2026 킹옥션 한국세관공매 & 안티그래비티 파트너(정이사) 협업 시스템
-    </footer>
-</div>
-
-<!-- 실시간 데이터 호출 스크립트 추가 -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 데이터 포매터 (천 단위 콤마)
-        const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        
-        // JSON 파일 불러오기 (fetch)
-        fetch('dashboard_data.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const meta = data.meta_ads;
-                
-                // 데이터 삽입
-                if (meta) {
-                    document.getElementById('spend-val').textContent = formatNumber(meta.spend) + '원';
-                    document.getElementById('cpa-val').textContent = formatNumber(meta.cpa) + '원';
-                    document.getElementById('ctr-val').textContent = meta.ctr + '%';
-                    document.getElementById('clicks-val').textContent = formatNumber(meta.clicks);
-                    
-                    // 만약 업데이트 일자가 있으면 날짜 타이틀 갱신
-                    if (data.last_updated) {
-                         document.getElementById('auto-date').innerText = '데이터 기준일: ' + data.last_updated;
+            // JSON 파일 불러오기 (fetch)
+            fetch('dashboard_data.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
-                }
+                    return response.json();
+                })
+                .then(data => {
+                    const meta = data.meta_ads;
 
-                // 블로그 데이터 삽입
-                const blog = data.naver_blog;
-                if (blog && blog.status === 'success') {
-                     const blogLatest = document.getElementById('blog-latest-post');
-                     if (blogLatest && blog.posts && blog.posts.length > 0) {
-                         blogLatest.innerHTML = `<a href="${blog.posts[0].link}" target="_blank" style="color: inherit; text-decoration: none;">${blog.posts[0].title}</a>`;
-                     }
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                document.getElementById('spend-val').textContent = '데이터 없음';
-                document.getElementById('cpa-val').textContent = '데이터 없음';
-                document.getElementById('ctr-val').textContent = '0%';
-                document.getElementById('auto-date').innerText = '데이터 불러오기 실패 (JSON)';
-            });
-    });
-</script>
+                    // 데이터 삽입
+                    if (meta) {
+                        document.getElementById('spend-val').textContent = formatNumber(meta.spend) + '원';
+                        document.getElementById('cpa-val').textContent = formatNumber(meta.cpa) + '원';
+                        document.getElementById('ctr-val').textContent = meta.ctr + '%';
+                        document.getElementById('clicks-val').textContent = formatNumber(meta.clicks);
+
+                        // 만약 업데이트 일자가 있으면 날짜 타이틀 갱신
+                        if (data.last_updated) {
+                            document.getElementById('auto-date').innerText = '데이터 기준일: ' + data.last_updated;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    document.getElementById('spend-val').textContent = '데이터 없음';
+                    document.getElementById('cpa-val').textContent = '데이터 없음';
+                    document.getElementById('ctr-val').textContent = '0%';
+                    document.getElementById('auto-date').innerText = '데이터 업데이트 대기 중';
+                });
+
+            // 2) 네이버 블로그 최신 글 자동 스캔 (CORS 프록시 Rss2Json 사용)
+            const rssUrl = "https://rss.blog.naver.com/mentor-king.xml";
+            const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'ok' && data.items.length > 0) {
+                        const latestPost = data.items[0];
+                        const blogEl = document.getElementById('blog-latest-post');
+                        if (blogEl) {
+                            blogEl.innerHTML = `<a href="${latestPost.link}" target="_blank" style="color: inherit; text-decoration: none; border-bottom: 1px dashed #03c75a;">${latestPost.title}</a>`;
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("블로그 스캔 실패:", err);
+                    const blogEl = document.getElementById('blog-latest-post');
+                    if (blogEl) blogEl.innerText = "최신 글을 불러올 수 없습니다.";
+                });
+        });
+    </script>
 </body>
+
 </html>
+```
