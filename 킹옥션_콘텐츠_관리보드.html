@@ -417,15 +417,15 @@
     <!-- 통계 영역 -->
     <div class="stats-grid">
         <div class="stat-card">
-            <span class="stat-card-title">💡 아이디어 (기획 대기)</span>
+            <span class="stat-card-title">💡 기획 및 아이디어 (직원 회의)</span>
             <span class="stat-card-value" id="count-idea" style="color: var(--status-idea);">0</span>
         </div>
         <div class="stat-card">
-            <span class="stat-card-title">✍️ 제작 진행 중</span>
+            <span class="stat-card-title">✍️ 제작 진행 중 (대표 전용)</span>
             <span class="stat-card-value" id="count-progress" style="color: var(--status-progress);">0</span>
         </div>
         <div class="stat-card">
-            <span class="stat-card-title">✅ 누적 발행 완료</span>
+            <span class="stat-card-title">✅ 발행 완료 (자동 연동)</span>
             <span class="stat-card-value" id="count-done" style="color: var(--status-done);">0</span>
         </div>
         <div class="stat-card" style="background: var(--primary); color: white; border: none;">
@@ -440,7 +440,7 @@
         <!-- 컬럼 1: 아이디어 -->
         <div class="board-column">
             <div class="column-header">
-                <div class="column-title"><span style="color: var(--status-idea);">●</span> 기획 및 아이디어</div>
+                <div class="column-title"><span style="color: var(--status-idea);">●</span> 기획 및 아이디어 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal; margin-left: 5px;">(직원 회의/제안)</span></div>
                 <div class="column-count" id="badge-idea">0</div>
             </div>
             <div id="col-idea" class="card-list">
@@ -451,7 +451,7 @@
         <!-- 컬럼 2: 제작 중 -->
         <div class="board-column">
             <div class="column-header">
-                <div class="column-title"><span style="color: var(--status-progress);">●</span> 제작 진행 중</div>
+                <div class="column-title"><span style="color: var(--status-progress);">●</span> 제작 진행 중 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal; margin-left: 5px;">(대표 전용)</span></div>
                 <div class="column-count" id="badge-progress">0</div>
             </div>
             <div id="col-progress" class="card-list"></div>
@@ -460,7 +460,7 @@
         <!-- 컬럼 3: 발행 완료 (분석) -->
         <div class="board-column">
             <div class="column-header">
-                <div class="column-title"><span style="color: var(--status-done);">●</span> 완료 및 분석</div>
+                <div class="column-title"><span style="color: var(--status-done);">●</span> 완료 및 성과 분석 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal; margin-left: 5px;">(결과 자동수집)</span></div>
                 <div class="column-count" id="badge-done">0</div>
             </div>
             <div id="col-done" class="card-list"></div>
@@ -479,9 +479,9 @@
                     <div class="form-group">
                         <label>진행 상태</label>
                         <select id="cardStatus" class="form-control" onchange="toggleAnalysisFields()">
-                            <option value="idea">💡 기획 및 아이디어</option>
-                            <option value="progress">✍️ 제작 진행 중</option>
-                            <option value="done">✅ 발행 완료 및 분석</option>
+                            <option value="idea">💡 기획 및 아이디어 (직원 회의/제안용)</option>
+                            <option value="progress">✍️ 제작 진행 중 (대표 전용)</option>
+                            <option value="done">✅ 발행 완료 및 분석 (자동 연동)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -550,6 +550,7 @@
 
     <!-- 자동 갱신되는 외부 데이터 불러오기 -->
     <script src="content_auto_data.js"></script>
+    <script src="agent_strategy_data.js"></script>
 
     <script>
         // 초기 기본 데이터 셋탑
@@ -565,12 +566,11 @@
             contents = [...initialData];
         }
 
-        // 파이썬 연동기를 통해 읽어온 AUTO_CONTENT_DATA 병합
+        // 파이썬 크롤링 자동 연동기 (인스타/유튜브 수집) 병합
         if (typeof AUTO_CONTENT_DATA !== 'undefined' && Array.isArray(AUTO_CONTENT_DATA) && AUTO_CONTENT_DATA.length > 0) {
             AUTO_CONTENT_DATA.forEach(autoItem => {
                 const existingIdx = contents.findIndex(c => c.title === autoItem.title && c.channel === autoItem.channel);
                 if (existingIdx !== -1) {
-                    // 이미 있으면 지표만 최신화 (상태나 분석은 수동 기록을 우선할 수 있으나 여기선 덮어쓰기)
                     contents[existingIdx].metrics = autoItem.metrics;
                     contents[existingIdx].status = autoItem.status;
                 } else {
@@ -579,6 +579,17 @@
             });
         }
         
+        // 매주 월요일 오전 9시 생성되는 AI 주간 전략 병합
+        if (typeof AGENT_STRATEGY_DATA !== 'undefined' && Array.isArray(AGENT_STRATEGY_DATA) && AGENT_STRATEGY_DATA.length > 0) {
+            AGENT_STRATEGY_DATA.forEach(ideaItem => {
+                // 동일한 주(Week)에 생성된 동일한 제목의 기획안 중복 방지
+                const existingIdx = contents.findIndex(c => c.title === ideaItem.title && c.date === ideaItem.date);
+                if (existingIdx === -1) {
+                    contents.push(ideaItem);
+                }
+            });
+        }
+
         localStorage.setItem('ka_content_db', JSON.stringify(contents));
 
         let currentTab = 'all';
