@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,7 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            
+
             /* Status Colors */
             --status-idea: #3b82f6;
             --status-progress: #f59e0b;
@@ -80,6 +81,55 @@
         .btn-primary:hover {
             background: var(--primary-light);
             transform: translateY(-2px);
+        }
+
+        /* 탭 스타일 */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+        .tabs::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.6rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
         }
 
         /* 통계 영역 */
@@ -151,7 +201,7 @@
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-muted);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         /* 카드 UI */
@@ -160,8 +210,8 @@
             border-radius: 0.75rem;
             padding: 1.25rem;
             margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             cursor: pointer;
             transition: all 0.2s;
             position: relative;
@@ -169,7 +219,7 @@
 
         .card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
         }
 
         .card-tags {
@@ -188,6 +238,7 @@
 
         .tag-blog { background: #03c75a; }
         .tag-youtube { background: #ff0000; }
+        .tag-shorts { background: #eab308; }
         .tag-insta { background: #e1306c; }
         .tag-etc { background: var(--secondary); }
 
@@ -223,13 +274,18 @@
         /* 모달창 */
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(5px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
         }
 
         .modal-overlay.active {
@@ -240,9 +296,18 @@
             background: white;
             padding: 2.5rem;
             border-radius: 1.5rem;
-            width: 500px;
-            max-width: 95%;
+            width: 600px;
+            max-width: 100%;
             position: relative;
+            margin: auto;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        .form-row .form-group {
+            flex: 1;
         }
 
         .form-group {
@@ -269,40 +334,90 @@
             border-color: var(--primary);
         }
 
+        .section-divider {
+            margin: 20px 0;
+            border-top: 1px dashed var(--border);
+        }
+
         .modal-actions {
             display: flex;
             justify-content: flex-end;
             gap: 1rem;
             margin-top: 2rem;
         }
-        
+
         /* 모바일 반응형 */
         @media (max-width: 768px) {
-            body { padding: 1rem; }
-            .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .header button { width: 100%; justify-content: center; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-            .board-container { grid-template-columns: 1fr; }
-            .board-column { min-height: auto; margin-bottom: 1.5rem; }
+            body {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .header .btn-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .board-container {
+                grid-template-columns: 1fr;
+            }
+
+            .board-column {
+                min-height: auto;
+                margin-bottom: 1.5rem;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="header">
         <div>
-            <h1><i class="fa-solid fa-lightbulb" style="color: var(--status-progress);"></i> 마케팅 콘텐츠 기획 보드</h1>
-            <p>번뜩이는 인사이트를 기록하고, 성공적인 플랫폼 발행까지 관리하세요.</p>
+            <h1><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> 콘텐츠 기획 및 분석 보드</h1>
+            <p>채널별 콘텐츠 발행 내역과 성과를 분석하고 다음 전략을 수립하세요.</p>
         </div>
-        <button class="btn btn-primary" onclick="openModal()">
-            <i class="fa-solid fa-plus"></i> 새 아이디어 등록
-        </button>
+        <div class="btn-container" style="display:flex; gap:10px;">
+            <button class="btn" style="background: white; border: 1px solid var(--border);" onclick="syncContentData()">
+                <i class="fa-solid fa-rotate"></i> 데이터 자동 연동
+            </button>
+            <button class="btn btn-primary" onclick="openModal()">
+                <i class="fa-solid fa-plus"></i> 콘텐츠 기획 추가
+            </button>
+        </div>
+    </div>
+
+    <!-- 탭 네비게이션 -->
+    <div class="tabs">
+        <button class="tab-btn active" id="tab-all" onclick="changeTab('all')">전체 콘텐츠</button>
+        <button class="tab-btn" id="tab-insta" onclick="changeTab('insta')">인스타그램</button>
+        <button class="tab-btn" id="tab-blog" onclick="changeTab('blog')">네이버 블로그</button>
+        <button class="tab-btn" id="tab-youtube" onclick="changeTab('youtube')">유튜브 롱폼</button>
+        <button class="tab-btn" id="tab-shorts" onclick="changeTab('shorts')">유튜브 쇼츠</button>
     </div>
 
     <!-- 통계 영역 -->
     <div class="stats-grid">
         <div class="stat-card">
-            <span class="stat-card-title">💡 저장된 아이디어</span>
+            <span class="stat-card-title">💡 아이디어 (기획 대기)</span>
             <span class="stat-card-value" id="count-idea" style="color: var(--status-idea);">0</span>
         </div>
         <div class="stat-card">
@@ -310,12 +425,13 @@
             <span class="stat-card-value" id="count-progress" style="color: var(--status-progress);">0</span>
         </div>
         <div class="stat-card">
-            <span class="stat-card-title">✅ 발행 완료 (누적)</span>
+            <span class="stat-card-title">✅ 누적 발행 완료</span>
             <span class="stat-card-value" id="count-done" style="color: var(--status-done);">0</span>
         </div>
         <div class="stat-card" style="background: var(--primary); color: white; border: none;">
-            <span class="stat-card-title" style="color: rgba(255,255,255,0.8);">🔥 최다 발행 플랫폼</span>
-            <span class="stat-card-value" style="color: white; font-size: 1.4rem; padding-top: 0.4rem;" id="top-platform">-</span>
+            <span class="stat-card-title" style="color: rgba(255,255,255,0.8);">🔥 핵심 성과 (총 조회수)</span>
+            <span class="stat-card-value" style="color: white; font-size: 1.4rem; padding-top: 0.4rem;"
+                id="sum-views">0</span>
         </div>
     </div>
 
@@ -324,7 +440,7 @@
         <!-- 컬럼 1: 아이디어 -->
         <div class="board-column">
             <div class="column-header">
-                <div class="column-title"><span style="color: var(--status-idea);">●</span> 아이디어 뱅크</div>
+                <div class="column-title"><span style="color: var(--status-idea);">●</span> 기획 및 아이디어</div>
                 <div class="column-count" id="badge-idea">0</div>
             </div>
             <div id="col-idea" class="card-list">
@@ -341,10 +457,10 @@
             <div id="col-progress" class="card-list"></div>
         </div>
 
-        <!-- 컬럼 3: 발행 완료 -->
+        <!-- 컬럼 3: 발행 완료 (분석) -->
         <div class="board-column">
             <div class="column-header">
-                <div class="column-title"><span style="color: var(--status-done);">●</span> 발행 완료</div>
+                <div class="column-title"><span style="color: var(--status-done);">●</span> 완료 및 분석</div>
                 <div class="column-count" id="badge-done">0</div>
             </div>
             <div id="col-done" class="card-list"></div>
@@ -355,70 +471,138 @@
     <!-- 편집/추가 모달 -->
     <div class="modal-overlay" id="contentModal">
         <div class="modal-content">
-            <h2 id="modalTitle" style="margin-bottom: 1.5rem;">콘텐츠 기획 작성</h2>
+            <h2 id="modalTitle" style="margin-bottom: 1.5rem;">콘텐츠 기획 및 분석</h2>
             <form id="contentForm" onsubmit="saveContent(event)">
                 <input type="hidden" id="cardId">
-                
-                <div class="form-group">
-                    <label>진행 상태</label>
-                    <select id="cardStatus" class="form-control">
-                        <option value="idea">💡 아이디어</option>
-                        <option value="progress">✍️ 제작 중</option>
-                        <option value="done">✅ 발행 완료</option>
-                    </select>
-                </div>
 
-                <div class="form-group">
-                    <label>타겟 플랫폼 (채널)</label>
-                    <select id="cardChannel" class="form-control">
-                        <option value="blog">네이버 블로그</option>
-                        <option value="youtube">유튜브 영상/쇼츠</option>
-                        <option value="insta">인스타그램 릴스/피드</option>
-                        <option value="etc">기타/미정</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>진행 상태</label>
+                        <select id="cardStatus" class="form-control" onchange="toggleAnalysisFields()">
+                            <option value="idea">💡 기획 및 아이디어</option>
+                            <option value="progress">✍️ 제작 진행 중</option>
+                            <option value="done">✅ 발행 완료 및 분석</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>타겟 채널</label>
+                        <select id="cardChannel" class="form-control">
+                            <option value="insta">인스타그램 (릴스/피드)</option>
+                            <option value="blog">네이버 블로그</option>
+                            <option value="youtube">유튜브 롱폼</option>
+                            <option value="shorts">유튜브 쇼츠</option>
+                            <option value="etc">기타</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label>콘텐츠 제목 (Hook 포인트)</label>
-                    <input type="text" id="cardTitle" class="form-control" placeholder="예: 첫 경매, 절대로 잃지 않는 1가지 법칙" required>
+                    <input type="text" id="cardTitle" class="form-control" placeholder="발행될 제목 또는 기획 제목" required>
                 </div>
 
                 <div class="form-group">
-                    <label>기획 핵심 내용 / 메모</label>
-                    <textarea id="cardDesc" class="form-control" rows="4" placeholder="어떤 메시지를 전달할지, 참고할 레퍼런스가 있는지 적어주세요."></textarea>
+                    <label>주요 내용 / 기획 의도</label>
+                    <textarea id="cardDesc" class="form-control" rows="3"
+                        placeholder="전달하려는 핵심 메시지와 타겟팅 요소를 적어주세요."></textarea>
+                </div>
+
+                <!-- 분석 및 전략 영역 (완료 시 노출) -->
+                <div id="analysisSection" style="display: none;">
+                    <div class="section-divider"></div>
+                    <div style="font-weight: 700; color:var(--primary); margin-bottom: 10px;">
+                        <i class="fa-solid fa-chart-line"></i> 성과 분석 및 전략
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>조회수</label>
+                            <input type="number" id="cardViews" class="form-control" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>좋아요 / 공감</label>
+                            <input type="number" id="cardLikes" class="form-control" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>댓글 수</label>
+                            <input type="number" id="cardComments" class="form-control" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>콘텐츠 분석 및 다음 전략 (회고)</label>
+                        <textarea id="cardAnalysis" class="form-control" rows="3"
+                            placeholder="어떤 점이 좋았고, 아쉬웠나요? 다음 콘텐츠 기획에 어떻게 반영할지 회고를 남겨주세요."></textarea>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" class="btn" style="background: white; border: 1px solid var(--border);" onclick="closeModal()">취소</button>
-                    <button type="button" class="btn" id="deleteBtn" style="background: #fee2e2; color: #dc2626; display: none;" onclick="deleteContent()">삭제</button>
+                    <button type="button" class="btn" style="background: white; border: 1px solid var(--border);"
+                        onclick="closeModal()">취소</button>
+                    <button type="button" class="btn" id="deleteBtn"
+                        style="background: #fee2e2; color: #dc2626; display: none;"
+                        onclick="deleteContent()">삭제</button>
                     <button type="submit" class="btn btn-primary">저장하기</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- 자동 갱신되는 외부 데이터 불러오기 -->
+    <script src="content_auto_data.js"></script>
+
     <script>
         // 초기 기본 데이터 셋탑
         const initialData = [
-            { id: 1, status: 'idea', channel: 'blog', title: '초보자가 실수하기 쉬운 명도 TOP 3', desc: '판례 위주로 풀어서 쓰고 30기 모집 링크 연동할 것', date: '2026-02-24' },
-            { id: 2, status: 'progress', channel: 'youtube', title: '인천세관 공매 현장 브이로그', desc: '이번 주 목요일 촬영본 컷편집 중. 썸네일 자극적으로 뽑기', date: '2026-02-23' },
-            { id: 3, status: 'done', channel: 'insta', title: '경매 전 무조건 체크해야 할 사이트 리스트', desc: '릴스 업로드 완료. 반응 좋으면 블로그로 확장 발행 예정.', date: '2026-02-21' }
+            { id: 1, status: 'idea', channel: 'blog', title: '초보자가 실수하기 쉬운 명도 TOP 3', desc: '판례 위주로 풀어서 쓰고 30기 모집 링크 연동할 것', analysis: '', metrics: {views:0, likes:0, comments:0}, date: '2026-02-24' },
+            { id: 2, status: 'progress', channel: 'youtube', title: '인천세관 공매 현장 브이로그', desc: '이번 주 촬영본 컷편집 중. 썸네일 자극적으로 뽑기', analysis: '', metrics: {views:0, likes:0, comments:0}, date: '2026-02-23' },
+            { id: 3, status: 'idea', channel: 'shorts', title: '이거 모르면 공매하지 마세요 (1분요약)', desc: '공매 단점 3가지 빠르게 짚어주기', analysis: '', metrics: {views:0, likes:0, comments:0}, date: '2026-02-24' },
+            { id: 4, status: 'done', channel: 'insta', title: '경매 전 무조건 체크해야 할 사이트 리스트', desc: '릴스 업로드 완료. 반응 좋으면 블로그 연계 예정.', analysis: '초반 3초 훅이 조금 길었음. 다음엔 텍스트 팝업으로 더 강하게 시작하기.', metrics: {views:1540, likes:120, comments:14}, date: '2026-02-21' }
         ];
 
-        let contents = JSON.parse(localStorage.getItem('ka_content_board')) || initialData;
+        let contents = JSON.parse(localStorage.getItem('ka_content_db'));
+        if (!contents || contents.length === 0) {
+            contents = [...initialData];
+        }
+
+        // 파이썬 연동기를 통해 읽어온 AUTO_CONTENT_DATA 병합
+        if (typeof AUTO_CONTENT_DATA !== 'undefined' && Array.isArray(AUTO_CONTENT_DATA) && AUTO_CONTENT_DATA.length > 0) {
+            AUTO_CONTENT_DATA.forEach(autoItem => {
+                const existingIdx = contents.findIndex(c => c.title === autoItem.title && c.channel === autoItem.channel);
+                if (existingIdx !== -1) {
+                    // 이미 있으면 지표만 최신화 (상태나 분석은 수동 기록을 우선할 수 있으나 여기선 덮어쓰기)
+                    contents[existingIdx].metrics = autoItem.metrics;
+                    contents[existingIdx].status = autoItem.status;
+                } else {
+                    contents.push(autoItem);
+                }
+            });
+        }
+        
+        localStorage.setItem('ka_content_db', JSON.stringify(contents));
+
+        let currentTab = 'all';
 
         function saveLocal() {
-            localStorage.setItem('ka_content_board', JSON.stringify(contents));
+            localStorage.setItem('ka_content_db', JSON.stringify(contents));
         }
 
         function getChannelBadge(channel) {
             const map = {
-                'blog': `<span class="tag tag-blog">BLOG</span>`,
-                'youtube': `<span class="tag tag-youtube">YOUTUBE</span>`,
-                'insta': `<span class="tag tag-insta">INSTA</span>`,
-                'etc': `<span class="tag tag-etc">ETC</span>`
+                'blog': `<span class="tag tag-blog"><i class="fa-solid fa-n"></i> 블로그</span>`,
+                'youtube': `<span class="tag tag-youtube"><i class="fa-brands fa-youtube"></i> 유튜브</span>`,
+                'shorts': `<span class="tag tag-shorts"><i class="fa-brands fa-youtube"></i> 쇼츠</span>`,
+                'insta': `<span class="tag tag-insta"><i class="fa-brands fa-instagram"></i> 인스타</span>`,
+                'etc': `<span class="tag tag-etc">기타</span>`
             };
             return map[channel] || map['etc'];
+        }
+
+        function changeTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            currentTab = tabId;
+            renderBoard();
         }
 
         function renderBoard() {
@@ -431,18 +615,45 @@
             // 초기화
             Object.values(cols).forEach(el => el.innerHTML = '');
 
-            contents.sort((a, b) => b.id - a.id).forEach(c => {
+            let displayContents = contents;
+            if (currentTab !== 'all') {
+                displayContents = contents.filter(c => c.channel === currentTab);
+            }
+
+            displayContents.sort((a, b) => b.id - a.id).forEach(c => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => openModal(c.id);
+
+                // 지표 및 분석 영역
+                let metricsHtml = '';
+                if (c.status === 'done' && c.metrics && (c.metrics.views || c.metrics.likes || c.metrics.comments)) {
+                   metricsHtml = `
+                   <div style="margin-top:0.75rem; font-size:0.75rem; display:flex; gap:12px; color:var(--text-muted); background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <span><i class="fa-solid fa-eye" style="color:#94a3b8"></i> ${c.metrics.views.toLocaleString()}</span>
+                        <span><i class="fa-solid fa-heart" style="color:#ef4444"></i> ${c.metrics.likes.toLocaleString()}</span>
+                        <span><i class="fa-solid fa-comment" style="color:#3b82f6"></i> ${c.metrics.comments.toLocaleString()}</span>
+                   </div>`;
+                }
                 
+                let analysisHtml = '';
+                if (c.analysis) {
+                   analysisHtml = `
+                   <div style="margin-top:0.75rem; font-size:0.8rem; border-left: 3px solid var(--primary); background:#fef2f2; padding:8px 10px; color: #475569; border-radius: 0 6px 6px 0;">
+                        <strong style="color:var(--primary); display:block; margin-bottom:3px; font-size:0.75rem;">💡 전략 회고</strong>
+                        ${c.analysis}
+                   </div>`;
+                }
+
                 card.innerHTML = `
                     <div class="card-tags">
                         ${getChannelBadge(c.channel)}
                     </div>
                     <div class="card-title">${c.title}</div>
-                    <div class="card-desc">${c.desc || '메모 없음'}</div>
-                    <div class="card-footer">
+                    <div class="card-desc">${c.desc || '내용 없음'}</div>
+                    ${metricsHtml}
+                    ${analysisHtml}
+                    <div class="card-footer" style="margin-top:1rem;">
                         <span><i class="fa-regular fa-calendar"></i> ${c.date}</span>
                     </div>
                 `;
@@ -452,39 +663,41 @@
                 }
             });
 
-            updateStats();
+            updateStats(displayContents);
         }
 
-        function updateStats() {
+        function updateStats(displayData) {
             const counts = { idea: 0, progress: 0, done: 0 };
-            const channels = { blog: 0, youtube: 0, insta: 0, etc: 0 };
+            let totalViews = 0;
 
-            contents.forEach(c => {
-                if(counts[c.status] !== undefined) counts[c.status]++;
-                if(c.status === 'done' && channels[c.channel] !== undefined) channels[c.channel]++;
+            displayData.forEach(c => {
+                if (counts[c.status] !== undefined) counts[c.status]++;
+                if (c.status === 'done' && c.metrics && c.metrics.views) {
+                    totalViews += Number(c.metrics.views);
+                }
             });
 
-            // 스탯 카드 업데이트
+            // 스탯 카드 업데이트 (가시화된 데이터 기준)
             document.getElementById('count-idea').innerText = counts.idea;
             document.getElementById('count-progress').innerText = counts.progress;
             document.getElementById('count-done').innerText = counts.done;
+            document.getElementById('sum-views').innerText = totalViews.toLocaleString();
 
             // 뱃지 업데이트
             document.getElementById('badge-idea').innerText = counts.idea;
             document.getElementById('badge-progress').innerText = counts.progress;
             document.getElementById('badge-done').innerText = counts.done;
+        }
 
-            // 최다 플랫폼 계산
-            let topPlatform = '-';
-            let maxCount = 0;
-            const names = { blog: '네이버 블로그', youtube: '유튜브', insta: '인스타그램', etc: '-' };
-            for(let k in channels) {
-                if(channels[k] > maxCount) {
-                    maxCount = channels[k];
-                    topPlatform = names[k];
-                }
+        // 모달에서 상태 변경 시 분석 필드 토글
+        function toggleAnalysisFields() {
+            const status = document.getElementById('cardStatus').value;
+            const section = document.getElementById('analysisSection');
+            if (status === 'done') {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
             }
-            document.getElementById('top-platform').innerText = maxCount === 0 ? '-' : topPlatform;
         }
 
         // 모달 관리
@@ -492,24 +705,40 @@
             document.getElementById('contentModal').classList.add('active');
             const form = document.getElementById('contentForm');
             const deleteBtn = document.getElementById('deleteBtn');
-            
+
             if (id) {
                 const c = contents.find(x => x.id === id);
-                document.getElementById('modalTitle').innerText = '진행 상태 및 내용 수정';
+                document.getElementById('modalTitle').innerText = '콘텐츠 기획 및 분석 수정';
                 document.getElementById('cardId').value = c.id;
                 document.getElementById('cardStatus').value = c.status;
                 document.getElementById('cardChannel').value = c.channel;
                 document.getElementById('cardTitle').value = c.title;
                 document.getElementById('cardDesc').value = c.desc;
+                
+                document.getElementById('cardViews').value = c.metrics ? (c.metrics.views || '') : '';
+                document.getElementById('cardLikes').value = c.metrics ? (c.metrics.likes || '') : '';
+                document.getElementById('cardComments').value = c.metrics ? (c.metrics.comments || '') : '';
+                document.getElementById('cardAnalysis').value = c.analysis || '';
+
                 deleteBtn.style.display = 'block';
             } else {
                 form.reset();
-                document.getElementById('modalTitle').innerText = '새로운 기획 등록';
+                document.getElementById('modalTitle').innerText = '새로운 기획/아이디어 등록';
                 document.getElementById('cardId').value = '';
                 document.getElementById('cardStatus').value = 'idea';
-                document.getElementById('cardChannel').value = 'blog';
+                if (currentTab !== 'all') {
+                    document.getElementById('cardChannel').value = currentTab;
+                } else {
+                    document.getElementById('cardChannel').value = 'insta';
+                }
+                document.getElementById('cardViews').value = '';
+                document.getElementById('cardLikes').value = '';
+                document.getElementById('cardComments').value = '';
+                document.getElementById('cardAnalysis').value = '';
+
                 deleteBtn.style.display = 'none';
             }
+            toggleAnalysisFields();
         }
 
         function closeModal() {
@@ -527,16 +756,21 @@
                 channel: document.getElementById('cardChannel').value,
                 title: document.getElementById('cardTitle').value,
                 desc: document.getElementById('cardDesc').value,
+                analysis: document.getElementById('cardAnalysis').value,
+                metrics: {
+                    views: parseInt(document.getElementById('cardViews').value) || 0,
+                    likes: parseInt(document.getElementById('cardLikes').value) || 0,
+                    comments: parseInt(document.getElementById('cardComments').value) || 0
+                },
                 date: new Date().toISOString().split('T')[0]
             };
 
             if (idVal) {
                 const idx = contents.findIndex(x => x.id === id);
-                // 만약 이전에 완성일자가 아닌데 이번에 완성(done)으로 바뀌면 날짜 최신화
-                if(contents[idx].status !== 'done' && cData.status === 'done') {
+                if (contents[idx].status !== 'done' && cData.status === 'done') {
                     cData.date = new Date().toISOString().split('T')[0];
                 } else {
-                    cData.date = contents[idx].date; // 유지
+                    cData.date = contents[idx].date; 
                 }
                 contents[idx] = cData;
             } else {
@@ -549,7 +783,7 @@
         }
 
         function deleteContent() {
-            if(confirm('이 콘텐츠 기획을 완전히 삭제하시겠습니까?')) {
+            if (confirm('이 데이터를 완전히 삭제하시겠습니까?')) {
                 const idVal = parseInt(document.getElementById('cardId').value);
                 contents = contents.filter(x => x.id !== idVal);
                 saveLocal();
@@ -558,14 +792,20 @@
             }
         }
 
+        // 파이썬 크롤링 자동 연동 다이얼로그
+        function syncContentData() {
+            alert("이 버튼을 누르면 서버에서 데이터를 가져와야 합니다만, 현재 오프라인 버전입니다.\\n\\n[실제 데이터 연동 방법]\\n'g:\\내 드라이브\\킹옥션 그래비티\\작업자(에이전트)\\scripts\\sync_content_dashboard.py' 파일을 파이썬으로 실행하시면, 최신 데이터가 반영됩니다. 이 파일은 윈도우 작업 스케줄러로 매일 자동 실행되도록 설정하시면 편리합니다.");
+        }
+
         // 오버레이 클릭 시 모달 닫기
-        document.getElementById('contentModal').addEventListener('click', function(e) {
-            if(e.target === this) closeModal();
+        document.getElementById('contentModal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
         });
 
-        // 초기 시작
+        // 초기 렌더링
         renderBoard();
 
     </script>
 </body>
+
 </html>
