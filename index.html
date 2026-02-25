@@ -409,6 +409,12 @@
             </div>
 
             <div class="topbar-right">
+                <div class="real-time-clock"
+                    style="background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; display: none;"
+                    id="sms-badge">
+                    <i class="fa-solid fa-database"></i>
+                    <span id="sms-date">SNS 데이터: 확인 중...</span>
+                </div>
                 <div class="real-time-clock">
                     <i class="fa-regular fa-clock"></i>
                     <span id="currentTime">00:00:00</span>
@@ -428,7 +434,8 @@
             <iframe id="iframe-dashboard" class="app-iframe active" src="킹옥션_마케팅_통합_대시보드.html"
                 title="마케팅 대시보드"></iframe>
             <iframe id="iframe-crm" class="app-iframe" src="킹옥션_CRM_시스템.html" title="고객관리 시스템"></iframe>
-            <iframe id="iframe-content" class="app-iframe" src="킹옥션_콘텐츠_관리보드.html" title="콘텐츠 기획 및 분석"></iframe>
+            <iframe id="iframe-content" class="app-iframe" src="킹옥션_콘텐츠_관리보드.html"
+                title="콘텐츠 기획 및 분석"></iframe>
         </div>
     </main>
 
@@ -445,6 +452,34 @@
             }
             setInterval(updateClock, 1000);
             updateClock();
+
+            // ----- SNS 데이터 갱신일 로직 -----
+            function fetchSnsDate() {
+                // 1) 로컬 스토리지에서 먼저 확인 (가장 확실한 방법, CRM 업로드 시 저장됨)
+                const localDate = localStorage.getItem('last_sms_upload');
+                if (localDate) {
+                    document.getElementById('sms-badge').style.display = 'flex';
+                    document.getElementById('sms-date').textContent = 'SNS: ' + localDate;
+                    return;
+                }
+
+                // 2) JSON 파일에서 확인 (파이썬 자동화 스크립트 실행 결과)
+                fetch('../채널분석/dashboard_data.json')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.csv_updated && data.csv_updated !== '파일 없음') {
+                            document.getElementById('sms-badge').style.display = 'flex';
+                            document.getElementById('sms-date').textContent = 'SNS: ' + data.csv_updated;
+                        } else {
+                            document.getElementById('sms-badge').style.display = 'none';
+                        }
+                    })
+                    .catch(e => {
+                        console.warn('SNS 데이터 확인 오류(로컬파일 보안정책일 수 있음)', e);
+                    });
+            }
+            fetchSnsDate();
+            setInterval(fetchSnsDate, 3000); // 3초마다 확인 (즉각 반영)
 
             // ----- 메뉴 탭 전환 로직 (SPA처럼 작동하게 만들기) -----
             const menuItems = document.querySelectorAll('.menu-item[data-target]');
