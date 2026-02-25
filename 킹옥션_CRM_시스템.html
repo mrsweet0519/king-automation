@@ -797,8 +797,13 @@
                     style="background: #10b981; color: white; border: none; font-weight: bold; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);"
                     title="휴대폰 기본 문자내역이나 카카오톡 대화 복사본(.txt)을 올리면 번호안에 담긴 대화를 자동 추출합니다.">📥
                     문자내역 흡수 (Txt)</button>
-                <input type="file" id="bulkUploadInput" accept=".txt,.csv" style="display: none;"
+                <input type="file" id="bulkUploadInput" accept=".txt,.csv,.xml" style="display: none;"
                     onchange="handleBulkUpload(event)">
+                <button class="btn btn-outline" onclick="document.getElementById('datePatchInput').click()"
+                    style="background: #6366f1; color: white; border: none; font-weight: bold; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 10px rgba(99,102,241,0.3);"
+                    title="CSV 파일의 실제 SMS 날짜로 최근연락일을 일괄 업데이트합니다.">📅 날짜 패치</button>
+                <input type="file" id="datePatchInput" accept=".csv" style="display: none;"
+                    onchange="patchDatesFromCSV(event)">
 
                 <a href="https://drive.google.com/drive/folders/1D8E9U_yBqK" target="_blank" class="btn btn-outline"
                     style="background: var(--warning); color: white; border: none; font-weight: bold; text-decoration: none; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);">📁
@@ -871,6 +876,7 @@
                     <select id="statusFilter" onchange="renderTable()"
                         style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border); color: var(--primary); font-weight: bold;">
                         <option value="">모든 고객 보기</option>
+                        <option value="student">🎓 수강생 (기수생)</option>
                         <option value="completed">✔️ 수강 등록 (30기 등)</option>
                         <option value="prospect">🔥 유망 고객 (집중)</option>
                         <option value="counsel">💬 상담 중</option>
@@ -885,6 +891,36 @@
                         <option value="공개강의">공개강의</option>
                         <option value="1일특강">1일특강</option>
                         <option value="홍보">홍보</option>
+                    </select>
+                    <select id="alphaFilter" onchange="renderTable()"
+                        style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border);">
+                        <option value="">이름순 (전체)</option>
+                        <option value="ㄱ">ㄱ</option>
+                        <option value="ㄴ">ㄴ</option>
+                        <option value="ㄷ">ㄷ</option>
+                        <option value="ㄹ">ㄹ</option>
+                        <option value="ㅁ">ㅁ</option>
+                        <option value="ㅂ">ㅂ</option>
+                        <option value="ㅅ">ㅅ</option>
+                        <option value="ㅇ">ㅇ</option>
+                        <option value="ㅈ">ㅈ</option>
+                        <option value="ㅊ">ㅊ</option>
+                        <option value="ㅋ">ㅋ</option>
+                        <option value="ㅌ">ㅌ</option>
+                        <option value="ㅍ">ㅍ</option>
+                        <option value="ㅎ">ㅎ</option>
+                        <option value="SMS">SMS번호</option>
+                    </select>
+                    <select id="cohortFilter" onchange="renderTable()"
+                        style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border); color: var(--secondary); font-weight: bold;">
+                        <option value="">🎓 모든 기수</option>
+                        <option value="30">30기</option>
+                        <option value="29">29기</option>
+                        <option value="28">28기</option>
+                        <option value="27">27기</option>
+                        <option value="26">26기</option>
+                        <option value="25">25기</option>
+                        <option value="none">기수 미지정</option>
                     </select>
                 </div>
             </div>
@@ -1059,6 +1095,7 @@
                             <option value="counsel">상담 중</option>
                             <option value="prospect">유망 (집중)</option>
                             <option value="completed">수강 등록</option>
+                            <option value="student">🎓 수강생 (기수생)</option>
                         </select>
                     </div>
                 </div>
@@ -1160,9 +1197,12 @@
                 const res = await fetch(GAS_URL);
                 const data = await res.json();
                 if (data && Array.isArray(data) && data.length > 0) {
-                    // DB 데이터가 있으면 로컬 데이터 덮어쓰기
-                    customers = data;
-                    localStorage.setItem('ka_crm_data', JSON.stringify(customers));
+                    if (data.length >= customers.length) {
+                        // DB가 로컬보다 많거나 같으면 DB 우선 (정상 동기화)
+                        customers = data;
+                        localStorage.setItem('ka_crm_data', JSON.stringify(customers));
+                    }
+                    // 로컬이 DB보다 많으면 로컬 우선 유지 (대량 흡수 후 보호)
                     return true;
                 }
             } catch (e) {
@@ -1187,9 +1227,37 @@
             target.value = result;
         }
 
-        // 페이지네이션 상태 초기화
+        // 페이지네이션 + 정렬 상태
         let currentPage = 1;
         const rowsPerPage = 10;
+        let currentSort = 'date'; // 'date' | 'alpha' | 'cohort'
+
+        function setSort(mode) {
+            currentSort = mode;
+            // 버튼 스타일 업데이트
+            ['alpha', 'cohort', 'date'].forEach(m => {
+                const btn = document.getElementById('sort' + m.charAt(0).toUpperCase() + m.slice(1) + 'Btn');
+                if (!btn) return;
+                if (m === mode) {
+                    btn.style.background = 'var(--primary)';
+                    btn.style.color = 'white';
+                    btn.style.borderColor = 'var(--primary)';
+                } else {
+                    btn.style.background = 'white';
+                    btn.style.color = '';
+                    btn.style.borderColor = 'var(--border)';
+                }
+            });
+            currentPage = 1;
+            renderTable();
+        }
+
+        function extractCohort(c) {
+            // 기수 숫자 추출: status, name, memo 에서 "N기" 패턴 검색
+            const combined = (c.status || '') + ' ' + (c.name || '') + ' ' + (c.memo || '');
+            const m = combined.match(/(\d+)기/);
+            return m ? parseInt(m[1]) : 0;
+        }
 
         // 문자열 기반 고정 ID 생성 함수 (중복 및 삭제 추적용)
         function generateStableId(str) {
@@ -1219,85 +1287,256 @@
         }
 
         // 대화내역 대량 흡수 (KakaoTalk .txt 파싱)
+        // === 날짜 직접 패치 (mergeOrAddCustomer 우회) ===
+        function patchDatesFromCSV(event) {
+            const file = event.target.files[0];
+            const inputTarget = event.target;
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const lines = e.target.result.split('\n');
+
+                const parseQ = (line) => {
+                    const res = []; let cur = ''; let inQ = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const ch = line[i];
+                        if (ch === '"') { inQ = !inQ; }
+                        else if (ch === ',' && !inQ) { res.push(cur); cur = ''; }
+                        else { cur += ch; }
+                    }
+                    res.push(cur); return res;
+                };
+
+                const phoneDateMap = {};
+                let csvRows = 0;
+                const samplePhones = [];
+                lines.forEach((line, idx) => {
+                    if (idx === 0 || !line.trim()) return;
+                    const cols = parseQ(line);
+                    if (cols.length < 3) return;
+                    const phone = (cols[1] || '').replace(/[^0-9]/g, '');
+                    const memo = (cols[2] || '').trim();
+                    const dateMatch = memo.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
+                    if (!phone || phone.length < 8) return;
+                    csvRows++;
+                    if (samplePhones.length < 3) samplePhones.push(phone);
+                    if (dateMatch) phoneDateMap[phone] = dateMatch[1];
+                });
+
+                let updated = 0;
+                const crmSamplePhones = customers.slice(0, 3).map(c => (c.phone || '').replace(/[^0-9]/g, ''));
+                customers.forEach((c, i) => {
+                    const normPhone = (c.phone || '').replace(/[^0-9]/g, '');
+                    if (phoneDateMap[normPhone]) {
+                        customers[i].date = phoneDateMap[normPhone];
+                        updated++;
+                    }
+                });
+
+                localStorage.setItem('ka_crm_data', JSON.stringify(customers));
+
+                // SNS CSV 업로드 시간 기록 (ERP 대시보드 연동용)
+                const now = new Date();
+                const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ' (수동 갱신)';
+                localStorage.setItem('last_sms_upload', formattedDate);
+
+                renderTable();
+                updateStats();
+
+                // 커스텀 화면 모달 및 Toast 알림 (차단 우회)
+                showToast(`📅 날짜 패치 완료! ${updated}명 업데이트`);
+
+                const resultMsg = `📅 날짜 패치 결과\n\n` +
+                    `CSV 총 행: ${csvRows}건\n` +
+                    `날짜 매칭 성공: ${updated}명\n\n` +
+                    `[CSV 예시 번호] ${samplePhones.join(', ')}\n` +
+                    `[CRM 예시 번호] ${crmSamplePhones.join(', ')}`;
+
+                // 임시 모달 생성 (alert 대용)
+                const overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0'; overlay.style.left = '0';
+                overlay.style.width = '100vw'; overlay.style.height = '100vh';
+                overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                overlay.style.zIndex = '9999';
+                overlay.style.display = 'flex';
+                overlay.style.justifyContent = 'center'; overlay.style.alignItems = 'center';
+
+                const b = document.createElement('div');
+                b.style.background = 'white';
+                b.style.padding = '2rem';
+                b.style.borderRadius = '8px';
+                b.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                b.style.maxWidth = '400px';
+                b.innerHTML = `<h3 style="margin-top:0;">패치 결과</h3><pre style="background:#f3f4f6;padding:1rem;border-radius:4px;white-space:pre-wrap;">${resultMsg}</pre><button onclick="this.parentElement.parentElement.remove()" style="margin-top:1rem;width:100%;padding:0.75rem;background:#4f46e5;color:white;border:none;border-radius:4px;cursor:pointer;">확인</button>`;
+
+                overlay.appendChild(b);
+                document.body.appendChild(overlay);
+
+                inputTarget.value = '';
+            };
+            reader.readAsText(file);
+        }
+
         function handleBulkUpload(event) {
+
             const file = event.target.files[0];
             if (!file) return;
+
+            showToast('📂 파일을 읽는 중입니다... 잠시만 기다려주세요!');
 
             const reader = new FileReader();
             reader.onload = function (e) {
                 const content = e.target.result;
-                const lines = content.split('\n');
                 let newCount = 0;
 
-                // 010-XXXX-XXXX 형식 정규식
-                const phoneRegex = /01[0-9]-?\d{3,4}-?\d{4}/g;
-
-                // 카카오톡 내보내기 포맷의 발신자 정규식 (예: [홍길동] [오전 10:00] 안녕하세요)
-                const msgRegex = /\[(.*?)\]\s+\[.*?\]\s+(.*)/;
-
-                // 파싱 로직: 각 사람별 첫 메시지를 추출
+                // 파싱 로직: 각 사람별 첫 메시지 또는 전체 대화 내용을 누적
                 const userFirstMsgs = Object.create(null);
                 const userNames = Object.create(null);
+                const userDates = Object.create(null);  // 실제 마지막 연락일
 
-                // 상태 추적 (현재 어떤 번호의 메시지를 읽고 있는지)
-                let currentPhone = null;
+                // --- 1. SMS Backup & Restore XML 포맷 처리 (줄 단위 속성 추출, 대용량/특수문자 안전) ---
+                if (content.includes("<?xml") && content.includes("<sms")) {
+                    const xmlLines = content.split('\n');
+                    let smsLineCount = 0;
 
-                lines.forEach(line => {
-                    line = line.trim();
-                    if (!line) return;
+                    for (let i = 0; i < xmlLines.length; i++) {
+                        const line = xmlLines[i];
+                        if (!line.includes('<sms ') && !line.includes('<sms\t')) continue;
+                        smsLineCount++;
 
-                    // 카카오톡 내보내기 포맷 매칭 시도
-                    const kakaoMatch = line.match(msgRegex);
-                    if (kakaoMatch) {
-                        const sender = kakaoMatch[1];
-                        let text = kakaoMatch[2];
+                        const addrMatch = line.match(/\baddress="([^"]*)"/);
+                        const bodyMatch = line.match(/\bbody="([^"]*)"/);
+                        const nameMatch = line.match(/\bcontact_name="([^"]*)"/);
 
-                        const phones = text.match(phoneRegex);
-                        if (phones) {
-                            phones.forEach(p => {
-                                const cleanPhone = p.replace(/-/g, '');
-                                currentPhone = cleanPhone; // 상태 전환
+                        if (!addrMatch) continue;
 
-                                if (!userFirstMsgs[cleanPhone]) {
-                                    userFirstMsgs[cleanPhone] = text;
-                                    if (!sender.match(phoneRegex)) userNames[cleanPhone] = sender;
-                                } else {
-                                    // 이미 있으면 추가로 이어붙임 (히스토리 문맥용)
-                                    if (userFirstMsgs[cleanPhone].length < 150) {
-                                        userFirstMsgs[cleanPhone] += " " + text;
-                                    }
-                                }
-                            });
-                        } else if (currentPhone) {
-                            // 전화번호가 없는 라인인데 방금 전화번호를 찾은 상태라면 그 번호의 연속된 메시지로 취급
-                            if (userFirstMsgs[currentPhone] && userFirstMsgs[currentPhone].length < 150) {
-                                userFirstMsgs[currentPhone] += " " + text;
-                            }
-                        }
-                    } else {
-                        // 카톡 포맷이 아닐 때 (일반 SMS 복사/붙여넣기 텍스트 등)
-                        const phones = line.match(phoneRegex);
-                        if (phones) {
-                            phones.forEach(p => {
-                                const cleanPhone = p.replace(/-/g, '');
-                                currentPhone = cleanPhone;
-                                if (!userFirstMsgs[cleanPhone]) {
-                                    userFirstMsgs[cleanPhone] = line;
-                                }
-                            });
-                        } else if (currentPhone) {
-                            // 전화번호 바로 다음 줄에 오는 텍스트 (문자 내용)
-                            if (userFirstMsgs[currentPhone] && userFirstMsgs[currentPhone].length < 150) {
-                                userFirstMsgs[currentPhone] += " " + line;
+                        let address = addrMatch[1] || '';
+                        const body = bodyMatch ? bodyMatch[1] : '';
+                        const contactName = nameMatch ? nameMatch[1] : '이름 미상';
+
+                        let finalPhone = address.replace(/[^0-9\+]/g, '');
+                        if (finalPhone.startsWith("+82")) finalPhone = "0" + finalPhone.substring(3);
+                        if (finalPhone.length < 8) continue;
+
+                        if (!userFirstMsgs[finalPhone]) {
+                            userFirstMsgs[finalPhone] = body || '(내용 없음)';
+                            userNames[finalPhone] = (contactName === "(Unknown)" || contactName === "null" || !contactName) ? "이름 미상" : contactName;
+                        } else {
+                            if (userFirstMsgs[finalPhone].length < 150 && body) {
+                                userFirstMsgs[finalPhone] += " " + body;
                             }
                         }
                     }
-                });
+
+                    // [진단용] 파싱 결과 확인 알림 -- 제거됨
+                }
+                // --- 1b. CSV 포맷 처리 (python/ps 변환 스크립트 출력물) ---
+                else if ((content.includes('이름') && content.includes('연락처')) ||
+                    (content.includes('name') && content.includes('phone'))) {
+                    // 따옴표 안 쉼표를 정확히 처리하는 CSV 파서
+                    const parseCSVLine = (line) => {
+                        const res = []; let cur = ''; let inQ = false;
+                        for (let i = 0; i < line.length; i++) {
+                            const ch = line[i];
+                            if (ch === '"') { inQ = !inQ; }
+                            else if (ch === ',' && !inQ) { res.push(cur); cur = ''; }
+                            else { cur += ch; }
+                        }
+                        res.push(cur);
+                        return res;
+                    };
+
+                    const csvLines = content.split('\n');
+                    csvLines.forEach((line, idx) => {
+                        if (idx === 0) return; // 헤더 스킵
+                        if (line.trim() === '') return;
+                        const cols = parseCSVLine(line);
+                        if (cols.length < 2) return;
+                        const name = (cols[0] || '').trim() || '이름 미상';
+                        const phone = (cols[1] || '').replace(/[^0-9]/g, '');
+                        const memo = (cols[2] || '').trim();
+                        // 날짜 추출: [SMS:2024-03-15] 형식 메모에서 추출
+                        const dateMatch = memo.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
+                        const dateVal = dateMatch ? dateMatch[1] : '';
+                        if (!phone || phone.length < 8) return;
+                        if (!userFirstMsgs[phone]) {
+                            userFirstMsgs[phone] = memo || '(CSV흡수)';
+                            userNames[phone] = name;
+                            userDates[phone] = dateVal || new Date().toISOString().split('T')[0];
+                        }
+                    });
+                }
+                // --- 2. 기존 txt / 카카오톡 내보내기 포맷 처리 ---
+                else {
+                    const lines = content.split('\n');
+                    // 010-XXXX-XXXX 형식 정규식
+                    const phoneRegex = /01[0-9]-?\d{3,4}-?\d{4}/g;
+
+                    // 카카오톡 내보내기 포맷의 발신자 정규식 (예: [홍길동] [오전 10:00] 안녕하세요)
+                    const msgRegex = /\[(.*?)\]\s+\[.*?\]\s+(.*)/;
+
+                    // 상태 추적 (현재 어떤 번호의 메시지를 읽고 있는지)
+                    let currentPhone = null;
+
+                    lines.forEach(line => {
+                        line = line.trim();
+                        if (!line) return;
+
+                        // 카카오톡 내보내기 포맷 매칭 시도
+                        const kakaoMatch = line.match(msgRegex);
+                        if (kakaoMatch) {
+                            const sender = kakaoMatch[1];
+                            let text = kakaoMatch[2];
+
+                            const phones = text.match(phoneRegex);
+                            if (phones) {
+                                phones.forEach(p => {
+                                    const cleanPhone = p.replace(/-/g, '');
+                                    currentPhone = cleanPhone; // 상태 전환
+
+                                    if (!userFirstMsgs[cleanPhone]) {
+                                        userFirstMsgs[cleanPhone] = text;
+                                        if (!sender.match(phoneRegex)) userNames[cleanPhone] = sender;
+                                    } else {
+                                        // 이미 있으면 추가로 이어붙임 (히스토리 문맥용)
+                                        if (userFirstMsgs[cleanPhone].length < 150) {
+                                            userFirstMsgs[cleanPhone] += " " + text;
+                                        }
+                                    }
+                                });
+                            } else if (currentPhone) {
+                                // 전화번호가 없는 라인인데 방금 전화번호를 찾은 상태라면 그 번호의 연속된 메시지로 취급
+                                if (userFirstMsgs[currentPhone] && userFirstMsgs[currentPhone].length < 150) {
+                                    userFirstMsgs[currentPhone] += " " + text;
+                                }
+                            }
+                        } else {
+                            // 카톡 포맷이 아닐 때 (일반 SMS 복사/붙여넣기 텍스트 등)
+                            const phones = line.match(phoneRegex);
+                            if (phones) {
+                                phones.forEach(p => {
+                                    const cleanPhone = p.replace(/-/g, '');
+                                    currentPhone = cleanPhone;
+                                    if (!userFirstMsgs[cleanPhone]) {
+                                        userFirstMsgs[cleanPhone] = line;
+                                    }
+                                });
+                            } else if (currentPhone) {
+                                // 전화번호 바로 다음 줄에 오는 텍스트 (문자 내용)
+                                if (userFirstMsgs[currentPhone] && userFirstMsgs[currentPhone].length < 150) {
+                                    userFirstMsgs[currentPhone] += " " + line;
+                                }
+                            }
+                        }
+                    });
+                }
 
                 // 추출한 번호로 고객 생성
                 Object.keys(userFirstMsgs).forEach(phone => {
                     const name = userNames[phone] || '이름 미상';
-                    const memo = userFirstMsgs[phone].length > 150 ? userFirstMsgs[phone].substring(0, 150) + '...' : userFirstMsgs[phone];
+                    let memo = userFirstMsgs[phone];
+                    if (memo.length > 150) memo = memo.substring(0, 150) + '...';
 
                     const customer = {
                         id: generateStableId(name + phone),
@@ -1305,9 +1544,9 @@
                         phone: phone,
                         path: '모바일(자동)',
                         status: 'inbox',
-                        memo: '📥 [Txt흡수] ' + memo,
-                        date: new Date().toISOString().split('T')[0],
-                        history: [{ time: new Date().toLocaleString(), content: '📥 [Txt흡수] ' + memo }]
+                        memo: '📥 [문자흡수] ' + memo,
+                        date: userDates[phone] || new Date().toISOString().split('T')[0],
+                        history: [{ time: new Date().toLocaleString(), content: '📥 [문자흡수] ' + memo }]
                     };
 
                     const changed = mergeOrAddCustomer(customer);
@@ -1316,6 +1555,12 @@
 
                 if (newCount > 0) {
                     localStorage.setItem('ka_crm_data', JSON.stringify(customers));
+
+                    // SNS CSV 업로드 시간 기록 (ERP 대시보드 연동용)
+                    const now = new Date();
+                    const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ' (수동 갱신)';
+                    localStorage.setItem('last_sms_upload', formattedDate);
+
                     renderTable();
                     updateStats();
                     showToast(`총 ${newCount}건의 새로운 연락처/대화가 대량으로 흡수되었습니다! 🎉`);
@@ -1383,18 +1628,27 @@
                 const existing = customers[existingIndex];
                 if (!existing.history) existing.history = [];
 
+                // ✅ 실제 SMS 날짜이면 무조건 업데이트 (오늘 날짜가 아닌 경우)
+                const today = new Date().toISOString().split('T')[0];
+                let dateUpdated = false;
+                if (newCustomer.date && newCustomer.date < today && newCustomer.date !== existing.date) {
+                    existing.date = newCustomer.date;
+                    dateUpdated = true;
+                }
+
                 // 중복 메시지 방지 (이미 히스토리에나 메모에 있는지)
                 const isDuplicate = existing.history.some(h => h.content === newCustomer.memo) || existing.memo === newCustomer.memo;
 
                 if (!isDuplicate) {
                     existing.memo = newCustomer.memo; // 최신 메모 업데이트
-                    existing.date = newCustomer.date; // 최신 날짜 업데이트
                     existing.history.push({ time: new Date().toLocaleString(), content: newCustomer.memo });
 
                     // 목록 최상단으로 끌어올리기
                     customers.splice(existingIndex, 1);
                     customers.unshift(existing);
                     merged = true;
+                } else if (dateUpdated) {
+                    merged = true; // 날짜만 업데이트됐어도 변경으로 처리
                 } else {
                     return false; // 새 내용 없음
                 }
@@ -1562,20 +1816,63 @@
             if (strategyText) strategyText.innerHTML = advice;
         }
 
+        // ===== 초성 추출 함수 =====
+        const CHOSEONG = ['\u3131', '\u3132', '\u3134', '\u3137', '\u3138', '\u3139', '\u3141', '\u3142', '\u3143', '\u3145', '\u3146', '\u3147', '\u3148', '\u3149', '\u314a', '\u314b', '\u314c', '\u314d', '\u314e'];
+        function getChoseong(str) {
+            if (!str) return '';
+            const first = str.trim()[0];
+            const code = first.charCodeAt(0);
+            if (code >= 0xAC00 && code <= 0xD7A3) {
+                return CHOSEONG[Math.floor((code - 0xAC00) / 588)];
+            }
+            return first.toUpperCase();
+        }
+
         function renderTable() {
             const list = document.getElementById('customerList');
             const search = document.getElementById('searchInput').value.toLowerCase();
             const pathFilter = document.getElementById('pathFilter').value;
             const statusFilter = document.getElementById('statusFilter').value;
+            const alphaFilter = document.getElementById('alphaFilter') ? document.getElementById('alphaFilter').value : '';
+            const cohortFilter = document.getElementById('cohortFilter') ? document.getElementById('cohortFilter').value : '';
 
             list.innerHTML = '';
 
-            const filtered = customers.filter(c => {
+            let filtered = customers.filter(c => {
                 const matchSearch = c.name.toLowerCase().includes(search) || c.memo.toLowerCase().includes(search);
                 const matchPath = pathFilter === '' || c.path === pathFilter;
                 const matchStatus = statusFilter === '' || c.status === statusFilter;
-                return matchSearch && matchPath && matchStatus;
+
+                // 초성 필터
+                let matchAlpha = true;
+                if (alphaFilter === 'SMS') {
+                    matchAlpha = c.name.startsWith('SMS-');
+                } else if (alphaFilter !== '') {
+                    matchAlpha = !c.name.startsWith('SMS-') && getChoseong(c.name) === alphaFilter;
+                }
+
+                // 기수 필터
+                let matchCohort = true;
+                if (cohortFilter === 'none') {
+                    matchCohort = extractCohort(c) === 0;
+                } else if (cohortFilter !== '') {
+                    matchCohort = extractCohort(c) === parseInt(cohortFilter);
+                }
+
+                return matchSearch && matchPath && matchStatus && matchAlpha && matchCohort;
             });
+
+            // 정렬: 이름순 필터 활성 시 ㄱㄴㄷ, 기수 필터 시 기수+이름, 기본 최신순
+            if (alphaFilter !== '') {
+                filtered = [...filtered].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
+            } else if (cohortFilter !== '') {
+                filtered = [...filtered].sort((a, b) => {
+                    const diff = extractCohort(b) - extractCohort(a);
+                    return diff !== 0 ? diff : (a.name || '').localeCompare(b.name || '', 'ko');
+                });
+            } else {
+                filtered = [...filtered].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+            }
 
             if (filtered.length === 0) {
                 document.getElementById('customerTable').style.display = 'none';
@@ -1601,7 +1898,8 @@
                     interest: { class: 'badge-interest', text: '관심/참석' },
                     counsel: { class: 'badge-counsel', text: '상담 중' },
                     prospect: { class: 'badge-prospect', text: '유망/집중' },
-                    completed: { class: 'badge-completed', text: '수강 등록' }
+                    completed: { class: 'badge-completed', text: '수강 등록' },
+                    student: { class: 'badge-completed', text: '🎓 수강생' }
                 };
                 const status = statusMap[c.status];
 
@@ -1627,7 +1925,7 @@
                     </td>
                     <td data-label="유입경로">${c.path}</td>
                     <td data-label="관리단계"><span class="badge ${status.class}">${status.text}</span></td>
-                    <td data-label="업데이트" style="color: var(--text-muted); font-size: 0.875rem;">${c.date}</td>
+                    <td data-label="업데이트" style="color: var(--text-muted); font-size: 0.875rem;">${(c.date || '').substring(0, 10)}</td>
                     <td data-label="관리액션">
                         <div class="actions">
                             <button class="btn-icon" title="수정/히스토리" onclick="editCustomer('${c.id}')">✏️</button>
@@ -1885,65 +2183,7 @@
             }
         }
 
-        // 대량 흡수기 기능 (TXT 파일 내 카카오톡/문자 대화내역 추출)
-        function handleBulkUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                showToast('파일 분석 중... 잠시만 기다려주세요.');
-                const text = e.target.result;
-                const lines = text.split('\n');
-                let addedCount = 0;
-
-                const phoneRegex = /01[0-9]-?\d{3,4}-?\d{4}/;
-
-                lines.forEach(line => {
-                    const cleanLine = line.trim();
-                    if (!cleanLine) return;
-
-                    const pMatch = cleanLine.match(phoneRegex);
-                    if (pMatch) {
-                        const phone = pMatch[0];
-                        let name = "카톡 대화 복원";
-
-                        // 카카오톡 내보내기 양식 "[이름] [시간] 텍스트" 에서 이름 추출
-                        const nameMatch = cleanLine.match(/\[(.*?)\]/);
-                        if (nameMatch && !nameMatch[1].includes("오전") && !nameMatch[1].includes("오후")) {
-                            name = nameMatch[1];
-                        }
-
-                        const cleanMemo = cleanLine.replace(/\[.*?\]/g, '').trim() || cleanLine;
-
-                        const customer = {
-                            id: generateStableId(phone + Date.now() + Math.random()),
-                            name: name,
-                            phone: phone,
-                            path: "대량업로드(Txt)",
-                            status: "inbox",
-                            memo: "[복구] " + cleanMemo.substring(0, 50),
-                            date: new Date().toISOString().split('T')[0],
-                            history: [{ time: new Date().toLocaleString(), content: "[복구] " + cleanMemo }]
-                        };
-
-                        const changed = mergeOrAddCustomer(customer);
-                        if (changed) addedCount++;
-                    }
-                });
-
-                if (addedCount > 0) {
-                    saveToDB();
-                    alert(`🔥 총 ${addedCount}건의 연락처와 대화가 성공적으로 추출되어 CRM 리스트에 흡수되었습니다!`);
-                } else {
-                    alert(`❌ 파일에서 유효한 연락처 정보(010...)를 하나도 찾지 못했습니다. 올바른 카카오톡 대화 내보내기 파일(.txt)인지 확인해주세요.`);
-                }
-
-                // 파일 입력창 초기화
-                document.getElementById('bulkUploadInput').value = "";
-            };
-            reader.readAsText(file);
-        }
 
         function saveCustomer(e) {
             e.preventDefault();
