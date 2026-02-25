@@ -295,7 +295,10 @@
             <div class="logo-area">
                 <h1>킹옥션 <span>마케팅 통합 대시보드</span></h1>
             </div>
-            <div class="date-badge" id="auto-date">데이터 기준일: 로딩 중...</div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="date-badge" id="sms-date" style="background:var(--primary-red);">SNS업로드: 대기 중</div>
+                <div class="date-badge" id="auto-date">데이터 기준일: 로딩 중...</div>
+            </div>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     var today = new Date();
@@ -595,7 +598,15 @@
                         if (data.last_updated) {
                             document.getElementById('auto-date').innerText = '데이터 기준일: ' + data.last_updated;
                         }
+
+                        // SNS DB 업데이트 일자 반영
+                        if (data.csv_updated) {
+                            document.getElementById('sms-date').innerText = 'SNS업로드: ' + data.csv_updated;
+                        } else {
+                            document.getElementById('sms-date').style.display = 'none';
+                        }
                     }
+
                 })
                 .catch(error => {
                     console.error('Fetch error:', error);
