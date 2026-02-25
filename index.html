@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,16 +14,16 @@
             --sidebar-active: #3a4259;
             --text-main: #ffffff;
             --text-muted: #8b95a5;
-            
+
             /* 탑바 및 배경 */
             --topbar-bg: #ffffff;
             --topbar-border: #e2e8f0;
             --main-bg: #f5f7f9;
-            
+
             /* 킹옥션 브랜드 컬러 */
             --brand-primary: #d32f2f;
             --brand-secondary: #ff5252;
-            
+
             /* 레이아웃 크기 */
             --sidebar-width: 240px;
             --topbar-height: 60px;
@@ -87,6 +88,7 @@
         .sidebar-menu::-webkit-scrollbar {
             width: 6px;
         }
+
         .sidebar-menu::-webkit-scrollbar-thumb {
             background-color: rgba(255, 255, 255, 0.2);
             border-radius: 3px;
@@ -178,7 +180,8 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-width: 0; /* flex 버그 방지 */
+            min-width: 0;
+            /* flex 버그 방지 */
         }
 
         /* 상단 네비게이션 바 */
@@ -190,7 +193,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 25px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
         }
 
         .topbar-left {
@@ -240,7 +243,7 @@
             cursor: pointer;
             transition: color 0.2s;
         }
-        
+
         .action-icon:hover {
             color: var(--brand-primary);
         }
@@ -251,9 +254,10 @@
             position: relative;
             background-color: var(--main-bg);
             padding: 20px;
-            overflow: hidden; /* iframe 스크롤에 맡김 */
+            overflow: hidden;
+            /* iframe 스크롤에 맡김 */
         }
-        
+
         .app-iframe {
             width: 100%;
             height: 100%;
@@ -261,11 +265,12 @@
             background-color: transparent;
             border-radius: 8px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            display: none; /* 기본 보이지 않음 */
+            display: none;
+            /* 기본 보이지 않음 */
             transition: opacity 0.3s ease;
             opacity: 0;
         }
-        
+
         .app-iframe.active {
             display: block;
             opacity: 1;
@@ -274,7 +279,10 @@
         /* 로딩 애니메이션 */
         .loader-overlay {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: rgba(245, 247, 249, 0.8);
             display: flex;
             justify-content: center;
@@ -285,7 +293,7 @@
             pointer-events: none;
             transition: opacity 0.2s;
         }
-        
+
         .loader-overlay.show {
             opacity: 1;
             pointer-events: all;
@@ -301,7 +309,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* 반응형 (모바일/태블릿) */
@@ -309,44 +319,50 @@
             .sidebar {
                 position: fixed;
                 left: -100%;
+                /* 사이드바 숨김 */
                 /* 사이드바 메뉴 열릴 때 애니메이션 */
             }
-            
+
             .sidebar.open {
                 left: 0;
-                box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
             }
 
             .menu-toggle {
                 display: block;
             }
-            
+
             .real-time-clock span {
-                display: none; /* 모바일에서는 시계 아이콘만 표시 */
+                display: none;
+                /* 모바일에서는 시계 아이콘만 표시 */
             }
-            
+
             .content-container {
                 padding: 10px;
             }
         }
-        
+
         /* 사이드바 오버레이 (모바일용 배경 어둡게) */
         .sidebar-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.5);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 999;
             display: none;
             opacity: 0;
             transition: opacity 0.3s;
         }
-        
+
         .sidebar-overlay.show {
             display: block;
             opacity: 1;
         }
     </style>
 </head>
+
 <body>
 
     <!-- 모바일용 사이드바 오버레이 -->
@@ -357,41 +373,25 @@
         <div class="sidebar-header">
             <h1><i class="fa-solid fa-crown"></i> 킹옥션 통합 ERP</h1>
         </div>
-        
+
         <div class="sidebar-menu">
-            <!-- 그룹 1: 마케팅/CRM 영역 -->
-            <div class="menu-group">
-                <div class="menu-group-title">Marketing & CRM</div>
-                
-                <a class="menu-item active" data-target="dashboard" data-title="마케팅 통합 대시보드" data-url="킹옥션_마케팅_통합_대시보드.html">
+            <div class="menu-section">
+                <a class="menu-item active" data-target="dashboard" data-title="마케팅 통합 대시보드">
                     <i class="fa-solid fa-chart-line"></i>
                     <span>마케팅 대시보드</span>
                 </a>
-                
-                <a class="menu-item" data-target="crm" data-title="고객 관리 시스템 (CRM)" data-url="킹옥션_CRM_시스템.html">
+
+                <a class="menu-item" data-target="crm" data-title="고객 관리 (CRM)">
                     <i class="fa-solid fa-users"></i>
                     <span>고객 관리 (CRM)</span>
                 </a>
-                
-                <a class="menu-item" data-target="content" data-title="콘텐츠 기획 보드" data-url="킹옥션_콘텐츠_관리보드.html">
+
+                <a class="menu-item" data-target="content" data-title="콘텐츠 기획 및 분석">
                     <i class="fa-solid fa-lightbulb"></i>
-                    <span>콘텐츠 및 블로그 기획</span>
+                    <span>콘텐츠 기획 및 분석</span>
                 </a>
             </div>
-
-
-            
-             <!-- 하단: 설정 영역 (숨김 처리 요청)
-             <div class="menu-group" style="margin-top: auto;">
-                <div class="menu-group-title">시스템</div>
-                <a class="menu-item" onclick="alert('시스템 설정 권한이 필요합니다.')">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>환경 설정</span>
-                </a>
-            </div>
-            -->
         </div>
-        <!-- 하단 유저 프로필 (제거됨) -->
     </aside>
 
     <!-- 우측 메인 영역 -->
@@ -407,7 +407,7 @@
                     <span>마케팅 통합 대시보드</span>
                 </div>
             </div>
-            
+
             <div class="topbar-right">
                 <div class="real-time-clock">
                     <i class="fa-regular fa-clock"></i>
@@ -423,11 +423,12 @@
             <div class="loader-overlay" id="loader">
                 <div class="spinner"></div>
             </div>
-            
+
             <!-- 앱 컨테이너들 -->
-            <iframe id="iframe-dashboard" class="app-iframe active" src="킹옥션_마케팅_통합_대시보드.html" title="마케팅 대시보드"></iframe>
-            <iframe id="iframe-crm" class="app-iframe" src="" title="고객관리 시스템"></iframe>
-            <iframe id="iframe-content" class="app-iframe" src="" title="콘텐츠 기획 보드"></iframe>
+            <iframe id="iframe-dashboard" class="app-iframe active" src="../채널분석/킹옥션_마케팅_통합_대시보드.html"
+                title="마케팅 대시보드"></iframe>
+            <iframe id="iframe-crm" class="app-iframe" src="../고객관리/킹옥션_CRM_시스템.html" title="고객관리 시스템"></iframe>
+            <iframe id="iframe-content" class="app-iframe" src="../마케팅관리/킹옥션_콘텐츠_관리보드.html" title="콘텐츠 기획 및 분석"></iframe>
         </div>
     </main>
 
@@ -451,15 +452,10 @@
             const pageTitleIcon = document.getElementById('pageTitle').querySelector('i');
             const loader = document.getElementById('loader');
 
-            // 한 번 로드된 iframe은 다시 로드하지 않기 위해 추적
-            const loadedIframes = {
-                'dashboard': true // 처음에 이미 로드되어 있음
-            };
-
             menuItems.forEach(item => {
-                item.addEventListener('click', function(e) {
+                item.addEventListener('click', function (e) {
                     e.preventDefault();
-                    
+
                     // 이미 활성화된 탭이면 무시
                     if (this.classList.contains('active')) return;
 
@@ -473,33 +469,19 @@
                     pageTitleIcon.style.color = 'var(--brand-primary)';
 
                     const targetId = this.getAttribute('data-target');
-                    const targetUrl = this.getAttribute('data-url');
                     const targetIframe = document.getElementById(`iframe-${targetId}`);
 
-                    // 3. 로더 띄우기 및 화면 전환
+                    // 3. 화면 탭 전환 (부드러운 로더 효과 반영)
                     loader.classList.add('show');
-                    
+
                     document.querySelectorAll('.app-iframe').forEach(iframe => {
                         iframe.classList.remove('active');
                     });
 
-                    // 처음 누르는 탭인 경우 src 할당
-                    if (!loadedIframes[targetId]) {
-                        targetIframe.src = targetUrl;
-                        
-                        // 로드 완료되면 로더 제거하고 화면 보이기
-                        targetIframe.onload = function() {
-                            loadedIframes[targetId] = true;
-                            loader.classList.remove('show');
-                            targetIframe.classList.add('active');
-                        };
-                    } else {
-                        // 이미 로드된 경우 바로 띄우기 (약간의 딜레이로 부드럽게)
-                        setTimeout(() => {
-                            loader.classList.remove('show');
-                            targetIframe.classList.add('active');
-                        }, 200);
-                    }
+                    setTimeout(() => {
+                        loader.classList.remove('show');
+                        targetIframe.classList.add('active');
+                    }, 150);
 
                     // 모바일 환경이면 클릭 후 사이드바 닫기
                     if (window.innerWidth <= 768) {
@@ -539,4 +521,5 @@
         });
     </script>
 </body>
+
 </html>
