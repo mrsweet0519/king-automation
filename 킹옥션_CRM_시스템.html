@@ -786,9 +786,6 @@
                     <button class="btn btn-outline" onclick="manualRefresh()"
                         style="background: white; color: var(--success); border: 1px solid var(--success);">⟳
                         새로고침</button>
-                    <button class="btn btn-outline" onclick="openAIModal()"
-                        style="background: white; color: var(--primary); border: 1px solid var(--primary);">✨ AI 스마트
-                        입력</button>
                     <button class="btn btn-outline" onclick="exportToCSV()"
                         style="background: white; color: var(--text-muted); border: 1px solid var(--border);">📤
                         내보내기</button>
@@ -799,15 +796,6 @@
                     문자내역 흡수 (Txt)</button>
                 <input type="file" id="bulkUploadInput" accept=".txt,.csv,.xml" style="display: none;"
                     onchange="handleBulkUpload(event)">
-                <button class="btn btn-outline" onclick="document.getElementById('datePatchInput').click()"
-                    style="background: #6366f1; color: white; border: none; font-weight: bold; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 10px rgba(99,102,241,0.3);"
-                    title="CSV 파일의 실제 SMS 날짜로 최근연락일을 일괄 업데이트합니다.">📅 날짜 패치</button>
-                <input type="file" id="datePatchInput" accept=".csv" style="display: none;"
-                    onchange="patchDatesFromCSV(event)">
-
-                <a href="https://drive.google.com/drive/folders/1D8E9U_yBqK" target="_blank" class="btn btn-outline"
-                    style="background: var(--warning); color: white; border: none; font-weight: bold; text-decoration: none; padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);">📁
-                    30기 수익반 명단</a>
                 <button class="btn btn-primary" onclick="openModal()"
                     style="padding: 0.6rem 1.5rem; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);">➕ 고객 추가</button>
             </div>
@@ -1199,7 +1187,16 @@
                 if (data && Array.isArray(data) && data.length > 0) {
                     if (data.length >= customers.length) {
                         // DB가 로컬보다 많거나 같으면 DB 우선 (정상 동기화)
-                        customers = data;
+                        // ✅ 단, 메모에 [SMS:날짜]가 있으면 그 날짜로 즉시 수정 후 저장 (구글 시트의 오염된 날짜 차단)
+                        customers = data.map(c => {
+                            if (c.memo) {
+                                const smsDateMatch = c.memo.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
+                                if (smsDateMatch && c.date !== smsDateMatch[1]) {
+                                    return { ...c, date: smsDateMatch[1] };
+                                }
+                            }
+                            return c;
+                        });
                         localStorage.setItem('ka_crm_data', JSON.stringify(customers));
                     }
                     // 로컬이 DB보다 많으면 로컬 우선 유지 (대량 흡수 후 보호)
@@ -1210,6 +1207,7 @@
             }
             return false;
         }
+
 
         // 연락처 자동 하이픈(-) 추가 정규식 함수
         function autoFormatPhone(target) {
@@ -1453,17 +1451,27 @@
                         if (line.trim() === '') return;
                         const cols = parseCSVLine(line);
                         if (cols.length < 2) return;
-                        const name = (cols[0] || '').trim() || '이름 미상';
+                        const rawName = (cols[0] || '').trim();
+                        // 이름 앞에 붙는 K., H. 등의 접두사 제거
+                        const name = rawName.replace(/^[A-Za-z]+\.\s*/, '').trim() || rawName || '이름 미상';
                         const phone = (cols[1] || '').replace(/[^0-9]/g, '');
                         const memo = (cols[2] || '').trim();
-                        // 날짜 추출: [SMS:2024-03-15] 형식 메모에서 추출
+                        const csvPath = (cols[3] || 'mobile').trim();
+                        const csvStatus = (cols[4] || '').trim();
+
+                        // ✅ 날짜 추출: [SMS:YYYY-MM-DD] 형식 (우선순위 최상위)
                         const dateMatch = memo.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
                         const dateVal = dateMatch ? dateMatch[1] : '';
+
                         if (!phone || phone.length < 8) return;
                         if (!userFirstMsgs[phone]) {
                             userFirstMsgs[phone] = memo || '(CSV흡수)';
                             userNames[phone] = name;
+                            // ✅ 날짜가 추출되면 그 날짜, 없으면 오늘 날짜 (절대 다른 날짜로 덮어쓰지 않음)
                             userDates[phone] = dateVal || new Date().toISOString().split('T')[0];
+                        } else if (dateVal && !userDates[phone]) {
+                            // 이미 메시지가 있지만 날짜가 없는 경우 날짜만 보완
+                            userDates[phone] = dateVal;
                         }
                     });
                 }
@@ -1532,47 +1540,69 @@
                     });
                 }
 
-                // 추출한 번호로 고객 생성
+                // ── CSV 직접 업서트 (upsert): 전화번호 기준으로 찾아서 날짜 강제 적용 ──
+                let addedCount = 0;
+                let updatedCount = 0;
+
                 Object.keys(userFirstMsgs).forEach(phone => {
                     const name = userNames[phone] || '이름 미상';
                     let memo = userFirstMsgs[phone];
-                    if (memo.length > 150) memo = memo.substring(0, 150) + '...';
 
-                    const customer = {
-                        id: generateStableId(name + phone),
-                        name: name,
-                        phone: phone,
-                        path: '모바일(자동)',
-                        status: 'inbox',
-                        memo: '📥 [문자흡수] ' + memo,
-                        date: userDates[phone] || new Date().toISOString().split('T')[0],
-                        history: [{ time: new Date().toLocaleString(), content: '📥 [문자흡수] ' + memo }]
-                    };
+                    // 날짜 결정 (3단계 방어선)
+                    let finalDate = userDates[phone];
+                    if (!finalDate) {
+                        const d = memo.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
+                        finalDate = d ? d[1] : new Date().toISOString().split('T')[0];
+                    }
 
-                    const changed = mergeOrAddCustomer(customer);
-                    if (changed) newCount++;
+                    if (memo.length > 200) memo = memo.substring(0, 200) + '...';
+
+                    // 기존 고객 검색 (전화번호 기준)
+                    const normPhone = phone.replace(/[^0-9]/g, '');
+                    const existIdx = customers.findIndex(c =>
+                        (c.phone || '').replace(/[^0-9]/g, '') === normPhone
+                    );
+
+                    if (existIdx !== -1) {
+                        // ✅ 기존 고객 날짜 직접 갱신
+                        customers[existIdx].date = finalDate;
+                        // 이름이 '이름 미상'이 아니면 이름도 갱신
+                        if (name !== '이름 미상') customers[existIdx].name = name;
+                        updatedCount++;
+                    } else {
+                        // ✅ 신규 고객 추가
+                        customers.unshift({
+                            id: generateStableId(name + phone),
+                            name: name,
+                            phone: phone,
+                            path: '모바일(자동)',
+                            status: 'interest',
+                            memo: '📥 [문자흡수] ' + memo,
+                            date: finalDate,
+                            history: [{ time: new Date().toLocaleString(), content: '📥 [문자흡수] ' + memo }]
+                        });
+                        addedCount++;
+                    }
                 });
 
-                if (newCount > 0) {
-                    localStorage.setItem('ka_crm_data', JSON.stringify(customers));
+                // 항상 저장 및 렌더링
+                localStorage.setItem('ka_crm_data', JSON.stringify(customers));
 
-                    // SNS CSV 업로드 시간 기록 (ERP 대시보드 연동용)
-                    const now = new Date();
-                    const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ' (수동 갱신)';
-                    localStorage.setItem('last_sms_upload', formattedDate);
+                const now = new Date();
+                const formattedDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ' (수동 갱신)';
+                localStorage.setItem('last_sms_upload', formattedDate);
 
-                    renderTable();
-                    updateStats();
-                    showToast(`총 ${newCount}건의 새로운 연락처/대화가 대량으로 흡수되었습니다! 🎉`);
-                } else {
-                    showToast('추가로 흡수할 새로운 전화번호 내역이 없습니다.');
-                }
+                renderTable();
+                updateStats();
+
+                showToast(`✅ CSV 흡수 완료: 신규 ${addedCount}명 추가, ${updatedCount}명 날짜 수정`);
 
                 // 파일 선택기 초기화
                 event.target.value = '';
             };
             reader.readAsText(file);
         }
+
 
         let tempAICustomer = null;
 
@@ -1595,6 +1625,10 @@
             const phoneMatch = cleanText.match(/01[0-9]-?\d{3,4}-?\d{4}/);
             const phone = phoneMatch ? phoneMatch[0] : "";
 
+            // ✅ [SMS:YYYY-MM-DD] 형식의 실제 날짜가 있으면 그것으로 사용 (오늘 날짜 대신)
+            const smsDateMatch = cleanText.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
+            const msgDate = smsDateMatch ? smsDateMatch[1] : new Date().toISOString().split('T')[0];
+
             let originalMemo = cleanText.substring(0, 150);
             const stableId = generateStableId(name + phone);
 
@@ -1606,7 +1640,7 @@
                 status: "inbox",
                 memo: "📢 " + originalMemo,
                 originalMemo: originalMemo,
-                date: new Date().toISOString().split('T')[0],
+                date: msgDate,
                 history: [{ time: new Date().toLocaleString(), content: "📢 " + originalMemo }]
             };
         }
@@ -1618,9 +1652,14 @@
             // 전화번호가 있으면 1순위로 조회, 없으면 이름으로 조회
             let existingIndex = -1;
             if (newCustomer.phone) {
-                existingIndex = customers.findIndex(c => c.phone.replace(/[^0-9]/g, '') === newCustomer.phone.replace(/[^0-9]/g, ''));
+                existingIndex = customers.findIndex(c => c.phone && c.phone.replace(/[^0-9]/g, '') === newCustomer.phone.replace(/[^0-9]/g, ''));
             } else if (newCustomer.name && newCustomer.name !== "이름 미상") {
                 existingIndex = customers.findIndex(c => c.name === newCustomer.name);
+            }
+
+            // 추가 방어 로직: 이름도 미상이고 폰번호도 없는 경우 동일한 내용인지 메모로 중복 체크하여 무한 추가 방지
+            if (existingIndex === -1 && (!newCustomer.phone && (!newCustomer.name || newCustomer.name === "이름 미상"))) {
+                existingIndex = customers.findIndex(c => c.memo === newCustomer.memo);
             }
 
             if (existingIndex !== -1) {
@@ -1628,10 +1667,25 @@
                 const existing = customers[existingIndex];
                 if (!existing.history) existing.history = [];
 
-                // ✅ 실제 SMS 날짜이면 무조건 업데이트 (오늘 날짜가 아닌 경우)
-                const today = new Date().toISOString().split('T')[0];
                 let dateUpdated = false;
-                if (newCustomer.date && newCustomer.date < today && newCustomer.date !== existing.date) {
+                
+                // 1. 명시적 날짜 [SMS:YYYY-MM-DD] 가 메모에 있으면 그 날짜로 강제 수복 (오류 복원)
+                const explicitDateMatch = newCustomer.memo && newCustomer.memo.match(/\[SMS:(\d{4}[-./]\d{2}[-./]\d{2})\]/);
+                if (explicitDateMatch) {
+                    const parsedDate = explicitDateMatch[1].replace(/[./]/g, '-');
+                    if (existing.date !== parsedDate) {
+                        existing.date = parsedDate;
+                        dateUpdated = true;
+                    }
+                } 
+                // 2. 명시적 날짜가 없다면, '더 최근'인 경우에만 갱신 (과거 날짜를 무분별하게 오늘 날짜로 덮어쓰는 버그 방지)
+                else if (newCustomer.date && existing.date && newCustomer.date > existing.date) {
+                    // 단, 2026년 등으로 무분별하게 찍힌 가짜 날짜가 들어온 경우를 대비해, 
+                    // 확실히 신규 유입인 경우에만 갱신. (기본적으로 기존 날짜를 보호하는 기조)
+                    // 최신 연락일 갱신을 위해 업데이트 허용.
+                    existing.date = newCustomer.date;
+                    dateUpdated = true;
+                } else if (!existing.date && newCustomer.date) {
                     existing.date = newCustomer.date;
                     dateUpdated = true;
                 }
@@ -1696,42 +1750,108 @@
             fetchRecentFromNtfy();
         }
 
+        // ✅ 날짜 자동 복원 함수: 메모 안에 [SMS:YYYY-MM-DD] 태그가 있는데 날짜가 다른 경우 수정
+        // 이 함수는 페이지 로드 시 한 번만 실행되어 과거에 잘못 저장된 날짜를 일괄 수정
+        function healSMSDates() {
+            let healCount = 0;
+            customers.forEach(c => {
+                if (!c.memo) return;
+                // 메모 전체에서 [SMS:YYYY-MM-DD] 추출
+                const smsDateMatch = c.memo.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
+                if (smsDateMatch) {
+                    const correctDate = smsDateMatch[1];
+                    // 날짜가 없거나 다른 경우 (잘못된 날짜 교체)
+                    if (c.date !== correctDate) {
+                        c.date = correctDate;
+                        healCount++;
+                    }
+                }
+                // 히스토리에서도 찾기
+                if (c.history && Array.isArray(c.history)) {
+                    c.history.forEach(h => {
+                        if (h.content) {
+                            const hDateMatch = h.content.match(/\[SMS:(\d{4}-\d{2}-\d{2})\]/);
+                            if (hDateMatch && c.date !== hDateMatch[1] && !smsDateMatch) {
+                                c.date = hDateMatch[1];
+                                healCount++;
+                            }
+                        }
+                    });
+                }
+            });
+            if (healCount > 0) {
+                localStorage.setItem('ka_crm_data', JSON.stringify(customers));
+                // ✅ 구글 시트에도 즉시 반영하여 오염된 날짜를 영구 제거 (이 한 번만 실행됨)
+                saveToDB();
+                console.log(`[날짜 복원] ${healCount}명의 최근 연락일이 SMS 원본 날짜로 자동 수정되었습니다.`);
+            }
+        }
+
         async function init() {
             // 구글 시트에서 최신 데이터 불러오기 (실시간 동기화)
             showToast("데이터베이스 통신 중...");
             await loadFromDB();
+            
+            // ✅ 잘못 저장된 날짜 자동 복원 (페이지 로드 시 1회 실행)
+            // 복원된 데이터는 구글 시트에도 즉시 반영하여 오염 사이클을 영구 차단
+            healSMSDates();
 
+            // ✅ synced_data.js에서 정확한 날짜 직접 적용 (mergeOrAddCustomer 우회)
+            // csv_to_crm.py가 생성한 데이터로 날짜를 강제 덮어쓰기
             if (window.CRM_SYNC_DATA && window.CRM_SYNC_DATA.length > 0) {
-                let hasNew = false;
-
-                // 오래된 데이터순으로 처리해서 히스토리가 시간순으로 쌓이도록 reverse 사용
-                const reversedSync = [...window.CRM_SYNC_DATA].reverse();
-
-                reversedSync.forEach(item => {
-                    // 삭제된 기록이면 건너뜀
-                    if (deletedIds.includes(String(item.id))) return;
-
-                    const cleanMemo = item.memo.replace('📢 ', '').trim();
-
-                    const customer = {
-                        id: String(item.id),
-                        name: item.name,
-                        phone: item.phone || '',
-                        path: item.path || '자동수집',
-                        status: item.status || 'inbox',
-                        memo: "📢 " + cleanMemo,
-                        date: item.date || new Date().toISOString().split('T')[0],
-                        history: [{ time: new Date().toLocaleString(), content: "📢 " + cleanMemo }]
-                    };
-
-                    const changed = mergeOrAddCustomer(customer);
-                    if (changed) hasNew = true;
+                
+                // ① 전화번호 → 날짜 매핑 테이블 생성
+                const phoneDateMap = {};
+                const phoneIdMap = {};
+                window.CRM_SYNC_DATA.forEach(item => {
+                    if (item.phone && item.date) {
+                        const normPhone = item.phone.replace(/[^0-9]/g, '');
+                        phoneDateMap[normPhone] = item.date;
+                        phoneIdMap[normPhone] = item;
+                    }
                 });
-
-                if (hasNew) {
-                    saveToDB();
+                
+                // ② 기존 customers의 날짜를 synced_data.js 날짜로 강제 수정
+                let patchCount = 0;
+                customers.forEach(c => {
+                    const normPhone = (c.phone || '').replace(/[^0-9]/g, '');
+                    if (normPhone && phoneDateMap[normPhone]) {
+                        const correctDate = phoneDateMap[normPhone];
+                        if (c.date !== correctDate) {
+                            c.date = correctDate;
+                            patchCount++;
+                        }
+                    }
+                });
+                
+                // ③ customers에 없는 신규 항목 추가 (mergeOrAddCustomer 방식)
+                let addCount = 0;
+                window.CRM_SYNC_DATA.forEach(item => {
+                    if (deletedIds.includes(String(item.id))) return;
+                    const normPhone = (item.phone || '').replace(/[^0-9]/g, '');
+                    // 이미 customers에 있으면 스킵 (날짜는 위에서 이미 수정됨)
+                    const exists = normPhone && customers.some(c => (c.phone || '').replace(/[^0-9]/g, '') === normPhone);
+                    if (!exists) {
+                        customers.push({
+                            id: String(item.id),
+                            name: item.name,
+                            phone: item.phone || '',
+                            path: item.path || '모바일(자동)',
+                            status: item.status || 'interest',
+                            memo: item.memo,
+                            date: item.date,
+                            history: item.history || []
+                        });
+                        addCount++;
+                    }
+                });
+                
+                if (patchCount > 0 || addCount > 0) {
+                    localStorage.setItem('ka_crm_data', JSON.stringify(customers));
+                    saveToDB(); // 구글 시트에도 반영
                 }
             }
+
             renderTable();
             updateStats();
 
@@ -1903,7 +2023,17 @@
                 };
                 const status = statusMap[c.status];
 
-                let memoPreview = c.memo;
+                let safeName = c.name || "이름 미상";
+                let safeMemo = c.memo || "";
+                let safeGender = c.gender || "미상";
+                let safeDate = c.date || "";
+                let safePath = c.path || "";
+                let safePhone = c.phone || "";
+
+                if (safeName === 'undefined' || safeName === 'null' || safeName.includes('오류')) safeName = "이름 미상";
+                if (safeDate === 'undefined' || safeDate === 'null' || safeDate.includes('오류') || safeDate.includes('ERROR')) safeDate = "날짜 정보 없음";
+
+                let memoPreview = safeMemo;
                 // 만약 히스토리가 많다면 (병합된 대화) 개수 표시
                 const historyCountText = (c.history && c.history.length > 1) ? ` <span style="background:var(--primary-light);color:white;padding:2px 6px;border-radius:10px;font-size:0.7rem;">대화 ${c.history.length}건</span>` : '';
 
@@ -1916,16 +2046,16 @@
                     </td>
                     <td data-label="고객정보">
                         <div class="user-info">
-                            <div class="avatar">${c.name[0]}</div>
+                            <div class="avatar">${safeName[0] || '?'}</div>
                             <div class="user-details">
-                                <div class="user-name">${c.name} <span style="font-size: 0.875rem; color: var(--text-muted); margin-left: 0.25rem;" title="${c.gender && c.gender !== '미상' ? c.gender : ''}">${c.gender === '남성' ? '👨' : (c.gender === '여성' ? '👩' : '')}</span>${historyCountText}</div>
+                                <div class="user-name">${safeName} <span style="font-size: 0.875rem; color: var(--text-muted); margin-left: 0.25rem;" title="${safeGender !== '미상' ? safeGender : ''}">${safeGender === '남성' ? '👨' : (safeGender === '여성' ? '👩' : '')}</span>${historyCountText}</div>
                                 <div class="user-memo">${memoPreview.substring(0, 50)}${memoPreview.length > 50 ? '...' : ''}</div>
                             </div>
                         </div>
                     </td>
-                    <td data-label="유입경로">${c.path}</td>
+                    <td data-label="유입경로">${safePath}</td>
                     <td data-label="관리단계"><span class="badge ${status.class}">${status.text}</span></td>
-                    <td data-label="업데이트" style="color: var(--text-muted); font-size: 0.875rem;">${(c.date || '').substring(0, 10)}</td>
+                    <td data-label="업데이트" style="color: var(--text-muted); font-size: 0.875rem;">${safeDate.substring(0, 10)}</td>
                     <td data-label="관리액션">
                         <div class="actions">
                             <button class="btn-icon" title="수정/히스토리" onclick="editCustomer('${c.id}')">✏️</button>
@@ -1957,23 +2087,30 @@
                     `;
                 } else {
                     cohortCustomers.forEach(c => {
+                        let safeName = c.name || "이름 미상";
+                        let safeMemo = c.memo || "";
+                        let safeGender = c.gender || "미상";
+                        let safePath = c.path || "";
+                        let safePhone = c.phone || "";
+                        if (safeName === 'undefined' || safeName === 'null' || safeName.includes('오류')) safeName = "이름 미상";
+
                         const dispDate = c.payDate ? c.payDate : (c.date || '-');
                         const tr = document.createElement('tr');
                         tr.style.cssText = "border-bottom: 1px solid var(--border); transition: background 0.2s;";
                         tr.innerHTML = `
                             <td data-label="결제자" style="padding: 1rem; font-weight: 600; color: var(--text-main);">
                                 <div style="display: flex; align-items: center; gap: 0.75rem; margin-left: auto;">
-                                    <div style="width: 32px; height: 32px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">${c.name[0]}</div>
-                                    ${c.name} <span style="font-size: 0.875rem; color: var(--text-muted); margin-left: 0.25rem;" title="${c.gender || '미상'}">${c.gender === '남성' ? '👨' : (c.gender === '여성' ? '👩' : '❔')}</span>
+                                    <div style="width: 32px; height: 32px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">${safeName[0] || '?'}</div>
+                                    ${safeName} <span style="font-size: 0.875rem; color: var(--text-muted); margin-left: 0.25rem;" title="${safeGender}">${safeGender === '남성' ? '👨' : (safeGender === '여성' ? '👩' : '❔')}</span>
                                 </div>
                             </td>
-                            <td data-label="연락처" style="padding: 1rem; color: var(--text-muted);">${c.phone || '-'}</td>
+                            <td data-label="연락처" style="padding: 1rem; color: var(--text-muted);">${safePhone || '-'}</td>
                             <td data-label="결제일/경로" style="padding: 1rem;">
                                 <div style="font-weight: 500;">${dispDate}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-muted);">${c.path}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">${safePath}</div>
                             </td>
                             <td data-label="특이사항" style="padding: 1rem; color: var(--text-muted); font-size: 0.875rem; background: #fafbfc;">
-                                ${c.memo.substring(0, 100)}${c.memo.length > 100 ? '...' : ''}
+                                ${safeMemo.substring(0, 100)}${safeMemo.length > 100 ? '...' : ''}
                             </td>
                         `;
                         cohortList.appendChild(tr);
