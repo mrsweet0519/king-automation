@@ -376,7 +376,12 @@
 
         <div class="sidebar-menu">
             <div class="menu-section">
-                <a class="menu-item active" data-target="dashboard" data-title="마케팅 통합 대시보드">
+                <a class="menu-item active" data-target="overview" data-title="종합 현황 (Today)">
+                    <i class="fa-solid fa-house"></i>
+                    <span>종합 현황판</span>
+                </a>
+
+                <a class="menu-item" data-target="dashboard" data-title="마케팅 통합 대시보드">
                     <i class="fa-solid fa-chart-line"></i>
                     <span>마케팅 대시보드</span>
                 </a>
@@ -403,8 +408,8 @@
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <div class="current-page-title" id="pageTitle">
-                    <i class="fa-solid fa-chart-line" style="color: var(--brand-primary);"></i>
-                    <span>마케팅 통합 대시보드</span>
+                    <i class="fa-solid fa-house" style="color: var(--brand-primary);"></i>
+                    <span>종합 현황 (Today)</span>
                 </div>
             </div>
 
@@ -431,7 +436,9 @@
             </div>
 
             <!-- 앱 컨테이너들 -->
-            <iframe id="iframe-dashboard" class="app-iframe active" src="킹옥션_마케팅_통합_대시보드.html"
+            <iframe id="iframe-overview" class="app-iframe active" src="킹옥션_종합_현황판.html"
+                title="종합 현황"></iframe>
+            <iframe id="iframe-dashboard" class="app-iframe" src="킹옥션_마케팅_통합_대시보드.html"
                 title="마케팅 대시보드"></iframe>
             <iframe id="iframe-crm" class="app-iframe" src="킹옥션_CRM_시스템.html" title="고객관리 시스템"></iframe>
             <iframe id="iframe-content" class="app-iframe" src="킹옥션_콘텐츠_관리보드.html"
