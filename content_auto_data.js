@@ -47,7 +47,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772106399,
+        "id": 1772109689,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매,지금 결정하면 안 되는 이유가 있습니다",
@@ -61,7 +61,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-09"
     },
     {
-        "id": 1772106400,
+        "id": 1772109690,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 수익만들기,처음 시작하기 전에 꼭 알아야 할 이야기 #세관공매 #이슈",
@@ -75,7 +75,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772106401,
+        "id": 1772109691,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 실무과정 1일특강｜목록부터 입찰까지 전과정 정리",
@@ -89,7 +89,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772106402,
+        "id": 1772109692,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매로 수익 만드는 방법｜어디서 보고 어떻게 시작할까?",
@@ -103,7 +103,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-22"
     },
     {
-        "id": 1772106403,
+        "id": 1772109693,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매는 낙찰 전에 결정됩니다｜초보자가 반드시 알아야 할 전체 흐름",
@@ -117,7 +117,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-16"
     },
     {
-        "id": 1772106601,
+        "id": 1772109890,
         "status": "done",
         "channel": "insta",
         "title": "세관공매는...",
@@ -131,7 +131,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-19"
     },
     {
-        "id": 1772106602,
+        "id": 1772109891,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -145,7 +145,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772106603,
+        "id": 1772109892,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -159,7 +159,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-26"
     },
     {
-        "id": 1772106604,
+        "id": 1772109893,
         "status": "done",
         "channel": "insta",
         "title": "2026년...",
@@ -173,7 +173,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772106605,
+        "id": 1772109894,
         "status": "done",
         "channel": "insta",
         "title": "수강생분의 낙찰 소식과 함께...",
