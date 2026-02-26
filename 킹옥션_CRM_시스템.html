@@ -244,7 +244,10 @@
     <div class="cohort-folders" id="cohortFolders"></div>
     <div class="cohort-detail" id="cohortDetail">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
-            <h3 id="cohortDetailTitle" style="font-size:0.9rem;font-weight:700;"></h3>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h3 id="cohortDetailTitle" style="font-size:0.9rem;font-weight:700;"></h3>
+                <button id="deleteCohortBtn" class="btn btn-outline" style="color:#ef4444;border-color:#fca5a5;font-size:0.75rem;padding:2px 8px;display:none;" onclick="deleteCohortFolder()">🗑️ 폴더 삭제</button>
+            </div>
             <button class="btn btn-outline" style="color:#64748b;border-color:#cbd5e1;font-size:0.75rem;" onclick="document.getElementById('cohortDetail').classList.remove('open')">닫기</button>
         </div>
         <table style="width:100%;border-collapse:collapse;">
@@ -390,26 +393,7 @@
 
 <div id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script>
-// ============================================================
-// Firebase 초기화
-// ============================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyA8TWTPu0syKReK7QhdToocPhoIT-g1EWk",
-  authDomain: "kingauction-crm.firebaseapp.com",
-  projectId: "kingauction-crm",
-  storageBucket: "kingauction-crm.firebasestorage.app",
-  messagingSenderId: "664042665905",
-  appId: "1:664042665905:web:3591204926f9c6448fef90"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// ============================================================
-// 데이터
-// ============================================================
 const STORE   = 'ka_crm_v2';
 const STORE30 = 'ka_crm_30';
 let customers  = [];
@@ -424,37 +408,26 @@ const T30_LABEL    = { inquiry:'문의', hot:'핫 리드 🔥', reserved:'예약
 // ============================================================
 // 초기화
 // ============================================================
-async function loadCustomers() {
-    try {
-        const snapshot = await db.collection('customers').get();
-        if (!snapshot.empty) {
-            customers = [];
-            snapshot.forEach(doc => {
-                customers.push({ id: doc.id, ...doc.data() });
-            });
-            let changed = false;
-            customers.forEach(c => {
-                if (c.cohort && c.cohort !== '미분류' && c.status !== 'student') {
-                    c.status = 'student';
-                    changed = true;
-                }
-            });
-            if (changed) saveCustomers();
-            return; 
-        }
-    } catch(e) { console.error('Firestore load error', e); }
-
+function loadCustomers() {
     try {
         const raw = localStorage.getItem(STORE);
         if (raw) {
             const p = JSON.parse(raw);
             if (Array.isArray(p) && p.length > 0) { 
                 customers = p; 
-                saveCustomers(); // Migrate to Firebase
+                // 기존 고객 중 기수가 배정된 경우 무조건 수강생으로 강제 변경
+                let changed = false;
+                customers.forEach(c => {
+                    if (c.cohort && c.cohort !== '미분류' && c.status !== 'student') {
+                        c.status = 'student';
+                        changed = true;
+                    }
+                });
+                if (changed) saveCustomers();
                 return; 
             }
         }
-    } catch(e) { }
+    } catch(e) { localStorage.removeItem(STORE); }
 
     if (window.CRM_SYNC_DATA && Array.isArray(window.CRM_SYNC_DATA) && window.CRM_SYNC_DATA.length > 0) {
         customers = window.CRM_SYNC_DATA.map((c, i) => ({
@@ -472,81 +445,23 @@ async function loadCustomers() {
     }
 }
 
-async function loadThirty() {
-    try {
-        const snapshot = await db.collection('thirtyDB').get();
-        if (!snapshot.empty) {
-            thirtyDB = [];
-            snapshot.forEach(doc => {
-                thirtyDB.push({ id: doc.id, ...doc.data() });
-            });
-            return;
-        }
-    } catch(e) { }
-    try { 
-        thirtyDB = JSON.parse(localStorage.getItem(STORE30)) || []; 
-        if(thirtyDB.length > 0) saveThirty(); // Migrate
-    } catch(e) { thirtyDB = []; }
+function loadThirty() {
+    try { thirtyDB = JSON.parse(localStorage.getItem(STORE30)) || []; } catch(e) { thirtyDB = []; }
 }
 
-async function saveCustomers() {
+function saveCustomers() {
     try { localStorage.setItem(STORE, JSON.stringify(customers)); } catch(e) {}
-    try {
-        let i = 0;
-        while (i < customers.length) {
-            const batch = db.batch();
-            const chunk = customers.slice(i, i + 490);
-            chunk.forEach(c => {
-                const docRef = db.collection('customers').doc(String(c.id));
-                batch.set(docRef, c);
-            });
-            await batch.commit();
-            i += 490;
-        }
-    } catch(e) { console.error("Firebase save error", e); }
 }
-
-async function saveThirty() {
+function saveThirty() {
     try { localStorage.setItem(STORE30, JSON.stringify(thirtyDB)); } catch(e) {}
-    try {
-        let i = 0;
-        while (i < thirtyDB.length) {
-            const batch = db.batch();
-            const chunk = thirtyDB.slice(i, i + 490);
-            chunk.forEach(t => {
-                const docRef = db.collection('thirtyDB').doc(String(t.id));
-                batch.set(docRef, t);
-            });
-            await batch.commit();
-            i += 490;
-        }
-    } catch(e) { console.error("Firebase save error", e); }
 }
 
 function clean(s) { return (s || '').replace(/\ufffd/g, '').trim(); }
 function esc(s)   { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-async function resetAndReload() {
-    if (!confirm('경고: Firebase와 로컬의 모든 데이터가 초기화됩니다. 계속합니까?')) return;
-    try {
-        let batch = db.batch();
-        let i = 0;
-        for (const c of customers) {
-            batch.delete(db.collection('customers').doc(String(c.id)));
-            if (++i % 490 === 0) { await batch.commit(); batch = db.batch(); }
-        }
-        await batch.commit();
-
-        batch = db.batch();
-        i = 0;
-        for (const t of thirtyDB) {
-            batch.delete(db.collection('thirtyDB').doc(String(t.id)));
-            if (++i % 490 === 0) { await batch.commit(); batch = db.batch(); }
-        }
-        await batch.commit();
-    } catch(e) {}
+function resetAndReload() {
+    if (!confirm('localStorage 초기화 후 synced_data.js 재로드합니까?')) return;
     localStorage.removeItem(STORE);
-    localStorage.removeItem(STORE30);
     location.reload();
 }
 
@@ -743,6 +658,13 @@ function renderCohort() {
 function showCohortDetail(key) {
     const list = customers.filter(c => (c.cohort||'미분류')===key);
     document.getElementById('cohortDetailTitle').textContent = `📁 ${key} — ${list.length}명`;
+    const delBtn = document.getElementById('deleteCohortBtn');
+    if (key !== '미분류') {
+        delBtn.style.display = 'inline-block';
+        delBtn.setAttribute('data-target', key);
+    } else {
+        delBtn.style.display = 'none';
+    }
     document.getElementById('cohortDetailTbody').innerHTML = list.map(c=>`
 <tr style="border-bottom:1px solid #f1f5f9;">
 <td style="padding:0.5rem;font-size:0.8rem;font-weight:600;">${esc(c.name)}</td>
@@ -861,6 +783,29 @@ function saveNewCohort() {
     }
 }
 
+function deleteCohortFolder() {
+    const key = document.getElementById('deleteCohortBtn').getAttribute('data-target');
+    if (!key || key === '미분류') return;
+    if (!confirm(`'${key}' 폴더를 정말 삭제하시겠습니까?\n\n이 폴더에 속해있던 고객들은 '미분류' 기수로 변경되며, 고객 정보 데이터 자체는 지워지지 않습니다.`)) return;
+    
+    // 1. 해당 기수 고객들의 태그 제거 ('미분류' 설정)
+    customers.forEach(c => {
+        if (c.cohort === key) c.cohort = '';
+    });
+    
+    // 2. 빈 폴더용 커스텀 기수 목록에서 해당 키 제거
+    customCohorts = customCohorts.filter(k => k !== key);
+    localStorage.setItem('kingauction_custom_cohorts', JSON.stringify(customCohorts));
+    
+    saveCustomers();
+    document.getElementById('cohortDetail').classList.remove('open');
+    toast(`'${key}' 폴더가 삭제되었습니다.`);
+    renderCohort();
+    if (document.querySelector('.tab-btn.active').textContent.includes('고객 DB')) {
+        render();
+    }
+}
+
 // ============================================================
 // TAB 4: 30기 DB
 // ============================================================
@@ -879,9 +824,8 @@ function addThirtyLead() {
     toast('✅ 30기 리드 추가됨');
 }
 
-async function removeThirtyLead(id) {
+function removeThirtyLead(id) {
     thirtyDB = thirtyDB.filter(x=>x.id!==id);
-    try { await db.collection('thirtyDB').doc(String(id)).delete(); } catch(e){}
     saveThirty(); renderThirty();
 }
 
@@ -1004,10 +948,9 @@ function saveCustomer() {
     }
     saveCustomers(); closeModal(); render(); toast('💾 저장됨');
 }
-async function deleteCustomer(id) {
+function deleteCustomer(id) {
     if(!confirm('삭제하시겠습니까?')) return;
     customers=customers.filter(c=>String(c.id)!==String(id));
-    try { await db.collection('customers').doc(String(id)).delete(); } catch(e){}
     saveCustomers(); render(); toast('🗑️ 삭제됨');
 }
 
@@ -1131,12 +1074,9 @@ async function pollNtfy() {
 // ============================================================
 // 시작
 // ============================================================
-async function initCRM() {
-    await loadCustomers();
-    await loadThirty();
-    render();
-}
-initCRM();
+loadCustomers();
+loadThirty();
+render();
 
 // 실시간 폴링 시작 (5초 후 첫 실행, 이후 30초마다)
 setTimeout(() => {
