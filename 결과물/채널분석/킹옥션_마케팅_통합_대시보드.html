@@ -607,24 +607,35 @@
                         }
                     }
 
-                    // 2) CRM 데이터 연동 (모집 현황)
-                    if (window.CRM_SYNC_DATA) {
-                        // '관심' 또는 '유망' 상태인 고객 수 계산
-                        const prospects = window.CRM_SYNC_DATA.filter(c => 
-                            c.status === 'prospect' || c.status === 'interest' || c.status === 'counsel'
+                    // 2) CRM 데이터 연동 (모집 현황 - 30기 전용 DB 우선)
+                    let prospects = 0;
+                    const raw30 = localStorage.getItem('ka_crm_30');
+                    if (raw30) {
+                        try {
+                            const db30 = JSON.parse(raw30);
+                            prospects = db30.length;
+                        } catch(e) { console.error(e); }
+                    }
+                    
+                    // 전용 DB가 없으면 메인 DB 필터링 (보조)
+                    if (prospects === 0 && window.CRM_SYNC_DATA) {
+                        prospects = window.CRM_SYNC_DATA.filter(c => 
+                            (c.cohort === '30기' || (c.memo && c.memo.includes('30기'))) && 
+                            c.status !== 'student'
                         ).length;
+                    }
 
-                        const goal = 30;
-                        const percent = Math.min((prospects / goal) * 100, 100);
+                    const goal = 50; // 목표 수치 (현시점 기준)
+                    const percent = Math.min((prospects / goal) * 100, 100);
 
-                        document.getElementById('cohort-current').textContent = prospects;
-                        document.getElementById('cohort-progress-bar').style.width = percent + '%';
-                        
-                        if (prospects >= goal) {
-                            document.getElementById('cohort-remain-text').textContent = '🎉 목표 달성 완료!';
-                        } else {
-                            document.getElementById('cohort-remain-text').textContent = `목표까지 ${goal - prospects}명 남음 🏃‍♂️`;
-                        }
+                    document.getElementById('cohort-current').textContent = prospects;
+                    document.getElementById('cohort-progress-bar').style.width = percent + '%';
+                    
+                    if (prospects >= goal) {
+                        document.getElementById('cohort-remain-text').textContent = '🎉 목표 달성 완료!';
+                    } else {
+                        document.getElementById('cohort-remain-text').textContent = `목표까지 ${goal - prospects}명 남음 🏃‍♂️`;
+                    }
                         
                         // SNS업로드 배지 시간도 CRM 데이터가 최신이면 갱신 (서버 데이터 우선)
                         if (window.CRM_SYNC_DATA[0] && window.CRM_SYNC_DATA[0].date && !data.csv_updated) {
