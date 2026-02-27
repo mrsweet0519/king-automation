@@ -1,5 +1,14 @@
 window.CRM_SYNC_DATA = [
   {
+    "id": 1772181009005,
+    "name": "{contact_name}",
+    "phone": "01047079373",
+    "path": "모바일(자동)",
+    "status": "interest",
+    "memo": "[무인수집] 네",
+    "date": "2026-02-27"
+  },
+  {
     "id": 1772179982206,
     "name": "즈음에",
     "phone": "01047079373",
