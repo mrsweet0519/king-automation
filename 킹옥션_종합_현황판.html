@@ -377,10 +377,20 @@
       const todoEl = document.getElementById("todoList");
       
       let class30Count = 0;
-      if (window.CRM_SYNC_DATA) {
-          // 관심/유망/상담 중인 고객을 실제 '신청자'로 계산
+      // 1) 전용 30기 모집 DB (Tab 4) 데이터 먼저 확인
+      const raw30 = localStorage.getItem('ka_crm_30');
+      if (raw30) {
+          try {
+              const db30 = JSON.parse(raw30);
+              class30Count = db30.length;
+          } catch(e) { console.error(e); }
+      }
+      
+      // 2) 만약 전용 DB가 비어있다면, 메인 DB에서 '30기' 태그 달린 유망고객이라도 체크 (보조)
+      if (class30Count === 0 && window.CRM_SYNC_DATA) {
           class30Count = window.CRM_SYNC_DATA.filter(c => 
-              c.status === 'prospect' || c.status === 'interest' || c.status === 'counsel'
+              (c.cohort === '30기' || (c.memo && c.memo.includes('30기'))) && 
+              c.status !== 'student'
           ).length;
       }
       
