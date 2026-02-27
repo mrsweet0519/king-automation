@@ -1,7 +1,7 @@
 window.CRM_SYNC_DATA = [
   {
     "id": 1772181009005,
-    "name": "{contact_name}",
+    "name": "무인수집",
     "phone": "01047079373",
     "path": "모바일(자동)",
     "status": "interest",
@@ -28,11 +28,11 @@ window.CRM_SYNC_DATA = [
   },
   {
     "id": 1772175653645,
-    "name": "{\"phone\"",
+    "name": "무인수집",
     "phone": "01047079373",
     "path": "모바일(자동)",
     "status": "interest",
-    "memo": "[무인수집] {\"phone\":\"01047079373\",\"name\":\"{contact_name}\",\"body\":\"네\",\"date\":\"{date}\",\"type\":\"received\"}",
+    "memo": "[무인이해] 네",
     "date": "2026-02-27"
   },
   {
