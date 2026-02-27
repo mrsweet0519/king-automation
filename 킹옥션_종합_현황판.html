@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>킹옥션 종합 현황판</title>
+    <script src="../고객관리/synced_data.js"></script>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
@@ -316,12 +317,26 @@
         `${today.getFullYear()}년 ${formatMonth}월 ${formatDay}일 (${days[today.getDay()]}요일)`;
 
       // 2. CRM 로컬 스토리지 데이터 로드 (킹옥션_CRM_시스템.html과 동일한 키 사용)
-      const STORE = "ka_crm_v2";
-      const data = JSON.parse(localStorage.getItem(STORE) || "[]");
-      document.getElementById("crmTotal").textContent =
-        data.length.toLocaleString();
+      const STORE = 'ka_crm_v2';
+      let rawData = localStorage.getItem(STORE);
+      let data = JSON.parse(rawData || '[]');
+      
+      // 만약 로컬 데이터가 비어있다면, synced_data.js에서 가져오는 Fallback 실행
+      if (data.length === 0 && window.CRM_SYNC_DATA && Array.isArray(window.CRM_SYNC_DATA)) {
+          console.log("Dashboard: Loading from Synced Data (Fallback)");
+          data = window.CRM_SYNC_DATA;
+          // 여기서 로컬에 저장하지는 않음 (CRM 본체에서 정규화하여 저장하기 때문)
+      }
 
-      const inboxCount = data.filter((c) => c.status === "inbox").length;
+      if (data.length === 0) {
+          document.getElementById('crmTotal').textContent = "연동전";
+          document.getElementById('crmTotal').style.color = "#94a3b8";
+      } else {
+          document.getElementById('crmTotal').textContent = data.length.toLocaleString();
+          document.getElementById('crmTotal').style.color = "#1e293b";
+      }
+
+      const inboxCount = data.filter(c => c.status === 'inbox').length;
       const counselCount = data.filter((c) => c.status === "counsel").length;
       const studentCount = data.filter((c) => c.status === "student").length;
 
@@ -358,11 +373,18 @@
           document.getElementById("mktDate").textContent = "데이터 없음";
         });
 
-      // 4. 요일별 할 일 렌더링 & 30기 현황
+      // 4. 요일별 할 일 렌더링 & 30기 현황 (CRM 데이터 연동)
       const todoEl = document.getElementById("todoList");
-      const class30Count = studentCount; // 임시 연동
-      document.getElementById("class30Applicants").textContent =
-        class30Count + "명";
+      
+      let class30Count = 0;
+      if (window.CRM_SYNC_DATA) {
+          // 관심/유망/상담 중인 고객을 실제 '신청자'로 계산
+          class30Count = window.CRM_SYNC_DATA.filter(c => 
+              c.status === 'prospect' || c.status === 'interest' || c.status === 'counsel'
+          ).length;
+      }
+      
+      document.getElementById("class30Applicants").textContent = class30Count + "명";
 
       let todos = [
         {
