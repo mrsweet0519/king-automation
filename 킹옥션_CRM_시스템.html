@@ -415,42 +415,56 @@ const T30_LABEL    = { inquiry:'문의', hot:'핫 리드 🔥', reserved:'예약
 // 초기화
 // ============================================================
 function loadCustomers() {
-    let localFound = false;
+    let localCustomers = [];
     try {
         const raw = localStorage.getItem(STORE);
         if (raw) {
-            const p = JSON.parse(raw);
-            if (Array.isArray(p) && p.length > 0) { 
-                customers = p; 
-                localFound = true;
-            }
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) localCustomers = parsed;
         }
     } catch(e) { 
         console.error("Local load error:", e);
         localStorage.removeItem(STORE); 
     }
 
-    // 로컬 데이터가 없거나 0명인 경우 서버 데이터(synced_data.js) 시도
-    if (!localFound) {
-        if (window.CRM_SYNC_DATA && Array.isArray(window.CRM_SYNC_DATA) && window.CRM_SYNC_DATA.length > 0) {
-            customers = window.CRM_SYNC_DATA.map((c, i) => ({
-                id: c.id || ('c' + i),
-                name: clean(c.name) || 'SMS-' + (c.phone || i),
-                phone: (c.phone || '').replace(/[^0-9]/g, ''),
-                status: c.status || 'interest',
-                date: c.date || '',
-                memo: clean(c.memo),
-                path: c.path || '모바일(자동)',
-                cohort: c.cohort || '',
-                history: c.history || []
-            }));
-            saveCustomers();
-            if (window.CRM_SYNC_DATA[0] && window.CRM_SYNC_DATA[0].date) {
-                localStorage.setItem('last_sms_upload', window.CRM_SYNC_DATA[0].date);
+    // 서버 데이터(synced_data.js)와 지능형 병합 (Merge)
+    if (window.CRM_SYNC_DATA && Array.isArray(window.CRM_SYNC_DATA)) {
+        let addedCount = 0;
+        window.CRM_SYNC_DATA.forEach(sc => {
+            const sPhone = (sc.phone || '').replace(/[^0-9]/g, '');
+            const sMemo  = (sc.memo || '').trim();
+            
+            // 전화번호와 메모(또는 날짜)가 겹치면 중복으로 간주
+            const exists = localCustomers.some(lc => {
+                const lPhone = (lc.phone || '').replace(/[^0-9]/g, '');
+                return (lPhone === sPhone && sPhone !== '') && 
+                       ((lc.memo || '').trim() === sMemo || lc.date === sc.date);
+            });
+            
+            if (!exists) {
+                localCustomers.unshift({
+                    id: sc.id || ('s' + Date.now() + Math.random()),
+                    name: clean(sc.name) || '신규고객',
+                    phone: sPhone,
+                    status: sc.status || 'interest',
+                    date: sc.date || '',
+                    memo: sMemo,
+                    path: sc.path || '모바일(자동)',
+                    cohort: sc.cohort || '',
+                    history: sc.history || []
+                });
+                addedCount++;
             }
-            console.log("Loaded from Server (window.CRM_SYNC_DATA)");
+        });
+        if (addedCount > 0) {
+            console.log(`Synced ${addedCount} new customers from server.`);
+            // 최신순 정렬
+            localCustomers.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
         }
     }
+
+    customers = localCustomers;
+    saveCustomers();
 
     // 공통 처리: 기수가 있는 경우 수강생 강제 전환
     if (customers.length > 0) {
