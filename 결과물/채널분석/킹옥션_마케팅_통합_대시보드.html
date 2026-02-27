@@ -330,12 +330,12 @@
             </div>
             <div class="card" style="border: 2px solid var(--primary-red);">
                 <div class="card-label" style="color: var(--primary-red); font-weight: bold;">🔥 30기 모객 달성률</div>
-                <div class="card-value">1 / 30명</div>
+                <div class="card-value"><span id="cohort-current">0</span> / 30명</div>
                 <div
                     style="width: 100%; background: #eee; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden;">
-                    <div style="width: 3.3%; height: 100%; background: var(--primary-red);"></div>
+                    <div id="cohort-progress-bar" style="width: 0%; height: 100%; background: var(--primary-red); transition: width 0.5s ease-out;"></div>
                 </div>
-                <div class="card-trend" style="margin-top: 5px; color: var(--primary-red);">목표까지 29명 남음 🏃‍♂️</div>
+                <div class="card-trend" id="cohort-remain-text" style="margin-top: 5px; color: var(--primary-red);">모집 현황 로딩 중...</div>
             </div>
         </div>
 
@@ -604,6 +604,32 @@
                             document.getElementById('sms-date').innerText = 'SNS업로드: ' + data.csv_updated;
                         } else {
                             document.getElementById('sms-date').style.display = 'none';
+                        }
+                    }
+
+                    // 2) CRM 데이터 연동 (모집 현황)
+                    if (window.CRM_SYNC_DATA) {
+                        // '관심' 또는 '유망' 상태인 고객 수 계산
+                        const prospects = window.CRM_SYNC_DATA.filter(c => 
+                            c.status === 'prospect' || c.status === 'interest' || c.status === 'counsel'
+                        ).length;
+
+                        const goal = 30;
+                        const percent = Math.min((prospects / goal) * 100, 100);
+
+                        document.getElementById('cohort-current').textContent = prospects;
+                        document.getElementById('cohort-progress-bar').style.width = percent + '%';
+                        
+                        if (prospects >= goal) {
+                            document.getElementById('cohort-remain-text').textContent = '🎉 목표 달성 완료!';
+                        } else {
+                            document.getElementById('cohort-remain-text').textContent = `목표까지 ${goal - prospects}명 남음 🏃‍♂️`;
+                        }
+                        
+                        // SNS업로드 배지 시간도 CRM 데이터가 최신이면 갱신 (서버 데이터 우선)
+                        if (window.CRM_SYNC_DATA[0] && window.CRM_SYNC_DATA[0].date && !data.csv_updated) {
+                             document.getElementById('sms-date').innerText = 'CRM연동: ' + window.CRM_SYNC_DATA[0].date;
+                             document.getElementById('sms-date').style.display = 'block';
                         }
                     }
 
