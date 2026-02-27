@@ -1,340 +1,390 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>킹옥션 종합 현황판</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --primary: #d32f2f;
-            --secondary: #ff5252;
-            --bg-color: #f5f7f9;
-            --card-bg: #ffffff;
-            --text-main: #1a1e29;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
+      :root {
+        --primary: #d32f2f;
+        --secondary: #ff5252;
+        --bg-color: #f5f7f9;
+        --card-bg: #ffffff;
+        --text-main: #1a1e29;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Pretendard', sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Pretendard", sans-serif;
+      }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 20px;
-        }
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        padding: 20px;
+      }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
 
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+      .header h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-        .header h1 i {
-            color: var(--primary);
-        }
+      .header h1 i {
+        color: var(--primary);
+      }
 
-        .date-display {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            background: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
+      .date-display {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        background: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
-        }
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+      }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-        }
+      .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+      }
 
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #1e293b;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-        }
+      .card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #1e293b;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 12px;
+      }
 
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
 
-        .stat-box {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 8px;
-            text-align: center;
-        }
+      .stat-box {
+        background: #f8fafc;
+        padding: 16px;
+        border-radius: 8px;
+        text-align: center;
+      }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
 
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
 
-        .stat-value.blue {
-            color: #2563eb;
-        }
+      .stat-value.blue {
+        color: #2563eb;
+      }
 
-        .stat-value.green {
-            color: #16a34a;
-        }
+      .stat-value.green {
+        color: #16a34a;
+      }
 
-        .todo-list {
-            list-style: none;
-        }
+      .todo-list {
+        list-style: none;
+      }
 
-        .todo-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.95rem;
-        }
+      .todo-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.95rem;
+      }
 
-        .todo-item:last-child {
-            border-bottom: none;
-        }
+      .todo-item:last-child {
+        border-bottom: none;
+      }
 
-        .todo-item i {
-            color: #cbd5e1;
-        }
+      .todo-item i {
+        color: #cbd5e1;
+      }
 
-        .todo-item.priority i {
-            color: #ef4444;
-        }
+      .todo-item.priority i {
+        color: #ef4444;
+      }
 
-        .notice-box {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      .notice-box {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-        .notice-text h3 {
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-            color: #fbbf24;
-        }
+      .notice-text h3 {
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+        color: #fbbf24;
+      }
 
-        .notice-text p {
-            font-size: 0.9rem;
-            color: #cbd5e1;
-        }
+      .notice-text p {
+        font-size: 0.9rem;
+        color: #cbd5e1;
+      }
 
-        .btn-action {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+      .btn-action {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      }
 
-        .btn-action:hover {
-            background: #2563eb;
-        }
+      .btn-action:hover {
+        background: #2563eb;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="header">
-        <h1><i class="fa-solid fa-bolt"></i> 킹옥션 투데이</h1>
-        <div class="date-display" id="todayDate">2026년 00월 00일 (요일)</div>
+      <h1><i class="fa-solid fa-bolt"></i> 킹옥션 투데이</h1>
+      <div class="date-display" id="todayDate">2026년 00월 00일 (요일)</div>
     </div>
 
     <!-- 상단 공지/알림 영역 -->
     <div class="notice-box">
-        <div class="notice-text">
-            <h3>🔥 30기 실전수익반 D-DAY 카운트!</h3>
-            <p id="greetingText">전사적 역량을 [30기 수강생 모집]에 집중합니다! 오늘의 마케팅 성과와 핵심 상담 지표를 확인해주세요.</p>
-        </div>
-        <button class="btn-action" style="background: #eab308; color: #1e293b;"
-            onclick="parent.document.querySelector('[data-target=\'crm\']').click()">30기 문의 DB 바로가기</button>
+      <div class="notice-text">
+        <h3>🔥 30기 실전수익반 D-DAY 카운트!</h3>
+        <p id="greetingText">
+          전사적 역량을 [30기 수강생 모집]에 집중합니다! 오늘의 마케팅 성과와
+          핵심 상담 지표를 확인해주세요.
+        </p>
+      </div>
+      <button
+        class="btn-action"
+        style="background: #eab308; color: #1e293b"
+        onclick="parent.document.querySelector('[data-target=\'crm\']').click()"
+      >
+        30기 문의 DB 바로가기
+      </button>
     </div>
 
     <div class="grid-container">
-        <!-- CRM 요약 카드 -->
-        <div class="card">
-            <div class="card-title">
-                <i class="fa-solid fa-users text-blue-500"></i> 고객 CRM 현황 (로컬)
-            </div>
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div class="stat-label">총 고객 수</div>
-                    <div class="stat-value blue" id="crmTotal">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">신규 수집 (대기)</div>
-                    <div class="stat-value" id="crmInbox">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">상담 진행 중</div>
-                    <div class="stat-value green" id="crmCounsel">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">전체 수강생</div>
-                    <div class="stat-value" id="crmStudent">0</div>
-                </div>
-            </div>
+      <!-- CRM 요약 카드 -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-users text-blue-500"></i> 고객 CRM 현황 (로컬)
         </div>
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-label">총 고객 수</div>
+            <div class="stat-value blue" id="crmTotal">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">신규 수집 (대기)</div>
+            <div class="stat-value" id="crmInbox">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">상담 진행 중</div>
+            <div class="stat-value green" id="crmCounsel">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">전체 수강생</div>
+            <div class="stat-value" id="crmStudent">0</div>
+          </div>
+        </div>
+      </div>
 
-        <!-- 마케팅 요약 카드 -->
-        <div class="card">
-            <div class="card-title">
-                <i class="fa-solid fa-chart-pie text-red-500"></i> 마케팅 지표 요약
-            </div>
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div class="stat-label">블로그 일간조회</div>
-                    <div class="stat-value" id="mktBlog">로딩중</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">유튜브 일간조회</div>
-                    <div class="stat-value blue" id="mktYoutube">로딩중</div>
-                </div>
-            </div>
-            <div
-                style="margin-top:20px; background:#f8fafc; padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:0.85rem; color:var(--text-muted);">업데이트 기준: <span id="mktDate">확인 중</span></span>
-                <button class="btn-action" style="padding:6px 12px; font-size:0.8rem; background:#64748b;"
-                    onclick="parent.document.querySelector('[data-target=\'dashboard\']').click()">더 보기</button>
-            </div>
+      <!-- 마케팅 요약 카드 -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-chart-pie text-red-500"></i> 마케팅 지표 요약
         </div>
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-label">블로그 일간조회</div>
+            <div class="stat-value" id="mktBlog">로딩중</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">유튜브 일간조회</div>
+            <div class="stat-value blue" id="mktYoutube">로딩중</div>
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 20px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <span style="font-size: 0.85rem; color: var(--text-muted)"
+            >업데이트 기준: <span id="mktDate">확인 중</span></span
+          >
+          <button
+            class="btn-action"
+            style="padding: 6px 12px; font-size: 0.8rem; background: #64748b"
+            onclick="
+              parent.document
+                .querySelector('[data-target=\'dashboard\']')
+                .click()
+            "
+          >
+            더 보기
+          </button>
+        </div>
+      </div>
 
-        <!-- 30기 집중 목표 카드 -->
-        <div class="card" style="border: 2px solid var(--primary);">
-            <div class="card-title">
-                <i class="fa-solid fa-bullhorn text-red-500"></i> 30기 실전수익반 모집 현황
-            </div>
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div class="stat-label">모집 목표</div>
-                    <div class="stat-value">50명</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">현재 신청자</div>
-                    <div class="stat-value blue" id="class30Applicants">0명</div>
-                </div>
-            </div>
+      <!-- 30기 집중 목표 카드 -->
+      <div class="card" style="border: 2px solid var(--primary)">
+        <div class="card-title">
+          <i class="fa-solid fa-bullhorn text-red-500"></i> 30기 실전수익반 모집
+          현황
         </div>
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-label">모집 목표</div>
+            <div class="stat-value">50명</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">현재 신청자</div>
+            <div class="stat-value blue" id="class30Applicants">0명</div>
+          </div>
+        </div>
+      </div>
 
-        <!-- 오늘의 할 일 카드 -->
-        <div class="card">
-            <div class="card-title">
-                <i class="fa-solid fa-list-check"></i> 오늘 확인해야 할 일
-            </div>
-            <ul class="todo-list" id="todoList">
-                <!-- JS에서 요일별 내용 렌더링 -->
-            </ul>
+      <!-- 오늘의 할 일 카드 -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-list-check"></i> 오늘 확인해야 할 일
         </div>
+        <ul class="todo-list" id="todoList">
+          <!-- JS에서 요일별 내용 렌더링 -->
+        </ul>
+      </div>
     </div>
 
     <script>
-        // 1. 날짜 세팅 (스크립트가 로드되자마자 실행)
-        const today = new Date();
-        const days = ['일', '월', '화', '수', '목', '금', '토'];
-        const formatMonth = String(today.getMonth() + 1).padStart(2, '0');
-        const formatDay = String(today.getDate()).padStart(2, '0');
-        document.getElementById('todayDate').textContent = `${today.getFullYear()}년 ${formatMonth}월 ${formatDay}일 (${days[today.getDay()]}요일)`;
+      // 1. 날짜 세팅 (스크립트가 로드되자마자 실행)
+      const today = new Date();
+      const days = ["일", "월", "화", "수", "목", "금", "토"];
+      const formatMonth = String(today.getMonth() + 1).padStart(2, "0");
+      const formatDay = String(today.getDate()).padStart(2, "0");
+      document.getElementById("todayDate").textContent =
+        `${today.getFullYear()}년 ${formatMonth}월 ${formatDay}일 (${days[today.getDay()]}요일)`;
 
-        // 2. CRM 로컬 스토리지 데이터 로드 (킹옥션_CRM_시스템.html과 동일한 키 사용)
-        const crmData = JSON.parse(localStorage.getItem('kingauction_customers') || '[]');
-        document.getElementById('crmTotal').textContent = crmData.length.toLocaleString();
+      // 2. CRM 로컬 스토리지 데이터 로드 (킹옥션_CRM_시스템.html과 동일한 키 사용)
+      const STORE = "ka_crm_v2";
+      const data = JSON.parse(localStorage.getItem(STORE) || "[]");
+      document.getElementById("crmTotal").textContent =
+        data.length.toLocaleString();
 
-        const inboxCount = crmData.filter(c => c.status === 'inbox').length;
-        const counselCount = crmData.filter(c => c.status === 'counsel').length;
-        const studentCount = crmData.filter(c => c.status === 'student').length;
+      const inboxCount = data.filter((c) => c.status === "inbox").length;
+      const counselCount = data.filter((c) => c.status === "counsel").length;
+      const studentCount = data.filter((c) => c.status === "student").length;
 
-        document.getElementById('crmInbox').textContent = inboxCount.toLocaleString();
-        document.getElementById('crmCounsel').textContent = counselCount.toLocaleString();
-        document.getElementById('crmStudent').textContent = studentCount.toLocaleString();
+      document.getElementById("crmInbox").textContent =
+        inboxCount.toLocaleString();
+      document.getElementById("crmCounsel").textContent =
+        counselCount.toLocaleString();
+      document.getElementById("crmStudent").textContent =
+        studentCount.toLocaleString();
 
-        if (inboxCount > 0) {
-            document.getElementById('greetingText').textContent = `어젯밤 새로 들어온 신규 문의가 ${inboxCount}건 있습니다. CRM을 먼저 확인해주세요!`;
-        }
+      if (inboxCount > 0) {
+        document.getElementById("greetingText").textContent =
+          `어젯밤 새로 들어온 신규 문의가 ${inboxCount}건 있습니다. CRM을 먼저 확인해주세요!`;
+      }
 
-        // 3. 마케팅 대시보드 데이터 로드 (dashboard_data.json)
-        fetch('../채널분석/dashboard_data.json')
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('mktDate').textContent = data.date || data.csv_updated || '오늘';
-                // 데이터 구조에 따라 예시로 렌더링. 구조가 다를 수 있으므로 예외처리
-                const blogScore = data.channel_data?.blog?.visitors || data.channel_data?.blog?.views || '-';
-                const ytScore = data.channel_data?.youtube?.views || '-';
-                document.getElementById('mktBlog').textContent = blogScore;
-                document.getElementById('mktYoutube').textContent = ytScore;
-            })
-            .catch(e => {
-                document.getElementById('mktBlog').textContent = '-';
-                document.getElementById('mktYoutube').textContent = '-';
-                document.getElementById('mktDate').textContent = '데이터 없음';
-            });
+      // 3. 마케팅 대시보드 데이터 로드 (dashboard_data.json)
+      fetch("../채널분석/dashboard_data.json")
+        .then((r) => r.json())
+        .then((data) => {
+          document.getElementById("mktDate").textContent =
+            data.date || data.csv_updated || "오늘";
+          // 데이터 구조에 따라 예시로 렌더링. 구조가 다를 수 있으므로 예외처리
+          const blogScore =
+            data.channel_data?.blog?.visitors ||
+            data.channel_data?.blog?.views ||
+            "-";
+          const ytScore = data.channel_data?.youtube?.views || "-";
+          document.getElementById("mktBlog").textContent = blogScore;
+          document.getElementById("mktYoutube").textContent = ytScore;
+        })
+        .catch((e) => {
+          document.getElementById("mktBlog").textContent = "-";
+          document.getElementById("mktYoutube").textContent = "-";
+          document.getElementById("mktDate").textContent = "데이터 없음";
+        });
 
-        // 4. 요일별 할 일 렌더링 & 30기 현황 
-        const todoEl = document.getElementById('todoList');
-        const class30Count = studentCount; // 임시 연동
-        document.getElementById('class30Applicants').textContent = class30Count + '명';
+      // 4. 요일별 할 일 렌더링 & 30기 현황
+      const todoEl = document.getElementById("todoList");
+      const class30Count = studentCount; // 임시 연동
+      document.getElementById("class30Applicants").textContent =
+        class30Count + "명";
 
-        let todos = [
-            { text: '[30기 홍보] 마케팅 채널 배너 및 링크 일괄 수정 확인', priority: true },
-            { text: '[30기 문의] 신규 유입 고객 전화 상담 및 카톡 캠페인 발송', priority: true },
-            { text: '30기 실전수익반 신규 전환율 성과 지표 점검', priority: false },
-        ];
+      let todos = [
+        {
+          text: "[30기 홍보] 마케팅 채널 배너 및 링크 일괄 수정 확인",
+          priority: true,
+        },
+        {
+          text: "[30기 문의] 신규 유입 고객 전화 상담 및 카톡 캠페인 발송",
+          priority: true,
+        },
+        { text: "30기 실전수익반 신규 전환율 성과 지표 점검", priority: false },
+      ];
 
-        todoEl.innerHTML = todos.map(t =>
-            `<li class="todo-item ${t.priority ? 'priority' : ''}">
-                <i class="fa-solid ${t.priority ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i>
+      todoEl.innerHTML = todos
+        .map(
+          (t) =>
+            `<li class="todo-item ${t.priority ? "priority" : ""}">
+                <i class="fa-solid ${t.priority ? "fa-circle-exclamation" : "fa-circle-check"}"></i>
                 <span>${t.text}</span>
-            </li>`
-        ).join('');
+            </li>`,
+        )
+        .join("");
     </script>
-</body>
-
+  </body>
 </html>
