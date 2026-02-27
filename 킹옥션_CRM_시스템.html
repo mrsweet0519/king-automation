@@ -427,38 +427,64 @@ function loadCustomers() {
         localStorage.removeItem(STORE); 
     }
 
-    // 서버 데이터(synced_data.js)와 지능형 병합 (Merge)
+    // 서버 데이터(synced_data.js)와 지능형 병합 (Merge & History Accumulation)
     if (window.CRM_SYNC_DATA && Array.isArray(window.CRM_SYNC_DATA)) {
         let addedCount = 0;
-        window.CRM_SYNC_DATA.forEach(sc => {
+        let historyCount = 0;
+        
+        // 서버 데이터는 보통 최신순으로 오므로, 뒤집어서 과거부터 병합하여 히스토리 순서 유지
+        [...window.CRM_SYNC_DATA].sort((a,b) => (a.date||'').localeCompare(b.date||'')).forEach(sc => {
             const sPhone = (sc.phone || '').replace(/[^0-9]/g, '');
-            const sMemo  = (sc.memo || '').trim();
-            
-            // 전화번호와 메모(또는 날짜)가 겹치면 중복으로 간주
-            const exists = localCustomers.some(lc => {
+            const sMemo  = (sc.memo || '').replace('[무인수집]', '').trim();
+            const sName  = (sc.name || '').includes('{') ? '신규고객' : clean(sc.name);
+            const sDate  = sc.date || '';
+
+            if (sPhone.length < 8) return; 
+
+            // 1. 기존 고객 찾기 (전화번호 기준)
+            const existingIdx = localCustomers.findIndex(lc => {
                 const lPhone = (lc.phone || '').replace(/[^0-9]/g, '');
-                return (lPhone === sPhone && sPhone !== '') && 
-                       ((lc.memo || '').trim() === sMemo || lc.date === sc.date);
+                return (lPhone === sPhone);
             });
             
-            if (!exists) {
+            if (existingIdx > -1) {
+                const target = localCustomers[existingIdx];
+                if (!target.history) target.history = [];
+                
+                // 중복 체크 (내용/날짜)
+                const isDuplicate = (target.memo === sMemo && target.date === sDate) || 
+                                   target.history.some(h => (h.content === sMemo && h.time.includes(sDate)));
+                
+                if (!isDuplicate && sMemo) {
+                    target.history.push({
+                        time: sDate + " (모바일)",
+                        content: sMemo
+                    });
+                    // 최신 정보로 갱신
+                    target.memo = sMemo;
+                    target.date = sDate;
+                    if (sName !== '신규고객' && (target.name === '신규고객' || !target.name)) target.name = sName;
+                    historyCount++;
+                }
+            } else {
+                // 2. 신규 고객 추가
                 localCustomers.unshift({
                     id: sc.id || ('s' + Date.now() + Math.random()),
-                    name: clean(sc.name) || '신규고객',
+                    name: sName || '신규고객',
                     phone: sPhone,
                     status: sc.status || 'interest',
-                    date: sc.date || '',
+                    date: sDate,
                     memo: sMemo,
                     path: sc.path || '모바일(자동)',
                     cohort: sc.cohort || '',
-                    history: sc.history || []
+                    history: []
                 });
                 addedCount++;
             }
         });
-        if (addedCount > 0) {
-            console.log(`Synced ${addedCount} new customers from server.`);
-            // 최신순 정렬
+        
+        if (addedCount > 0 || historyCount > 0) {
+            console.log(`Synced: ${addedCount} new, ${historyCount} history updates.`);
             localCustomers.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
         }
     }
