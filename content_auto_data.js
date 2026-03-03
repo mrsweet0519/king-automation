@@ -47,7 +47,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772499679,
+        "id": 1772499714,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매,지금 결정하면 안 되는 이유가 있습니다",
@@ -61,7 +61,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-09"
     },
     {
-        "id": 1772499680,
+        "id": 1772499715,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 수익만들기,처음 시작하기 전에 꼭 알아야 할 이야기 #세관공매 #이슈",
@@ -75,7 +75,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772499681,
+        "id": 1772499716,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 실무과정 1일특강｜목록부터 입찰까지 전과정 정리",
@@ -89,7 +89,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772499682,
+        "id": 1772499717,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매로 수익 만드는 방법｜어디서 보고 어떻게 시작할까?",
@@ -103,7 +103,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-22"
     },
     {
-        "id": 1772499683,
+        "id": 1772499718,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매는 낙찰 전에 결정됩니다｜초보자가 반드시 알아야 할 전체 흐름",
@@ -117,7 +117,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-16"
     },
     {
-        "id": 1772499879,
+        "id": 1772499915,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -131,7 +131,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772499880,
+        "id": 1772499916,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -145,7 +145,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-15"
     },
     {
-        "id": 1772499881,
+        "id": 1772499917,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -159,7 +159,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-07"
     },
     {
-        "id": 1772499882,
+        "id": 1772499918,
         "status": "done",
         "channel": "insta",
         "title": "2026년, 어떤 재테크가 뜰까요?...",
@@ -173,7 +173,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2025-12-11"
     },
     {
-        "id": 1772499883,
+        "id": 1772499919,
         "status": "done",
         "channel": "insta",
         "title": "📺 KBS ‘사장님 귀는 당나귀 귀’ 방송에 나온 바로...",
