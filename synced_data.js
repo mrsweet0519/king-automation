@@ -1,5 +1,14 @@
 window.CRM_SYNC_DATA = [
   {
+    "id": 1772499359764,
+    "name": "죄송합니",
+    "phone": "01092385289",
+    "path": "모바일(자동)",
+    "status": "interest",
+    "memo": "[무인수집] {\"phone\":\"01092385289\",\"name\":\"{contact_name}\",\"body\":\"죄송합니다 \n다음주는 미리 잡혀있는 일정이 있어요\",\"date\":\"{date}\",\"type\":\"received\"}",
+    "date": "2026-03-03"
+  },
+  {
     "id": 1772187542786,
     "name": "동반해서",
     "phone": "01056102531",
