@@ -47,7 +47,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772152419,
+        "id": 1772498776,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매,지금 결정하면 안 되는 이유가 있습니다",
@@ -61,7 +61,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-09"
     },
     {
-        "id": 1772152420,
+        "id": 1772498777,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 수익만들기,처음 시작하기 전에 꼭 알아야 할 이야기 #세관공매 #이슈",
@@ -75,7 +75,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772152421,
+        "id": 1772498778,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 실무과정 1일특강｜목록부터 입찰까지 전과정 정리",
@@ -89,7 +89,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772152422,
+        "id": 1772498779,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매로 수익 만드는 방법｜어디서 보고 어떻게 시작할까?",
@@ -103,7 +103,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-22"
     },
     {
-        "id": 1772152423,
+        "id": 1772498780,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매는 낙찰 전에 결정됩니다｜초보자가 반드시 알아야 할 전체 흐름",
@@ -117,7 +117,21 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-16"
     },
     {
-        "id": 1772152620,
+        "id": 1772498977,
+        "status": "done",
+        "channel": "insta",
+        "title": "세관공매,...",
+        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/p/DVXnItdEib5/",
+        "analysis": "구글/메타 Graph API 연동 완료",
+        "metrics": {
+            "views": 0,
+            "likes": 0,
+            "comments": 1
+        },
+        "date": "2026-03-02"
+    },
+    {
+        "id": 1772498978,
         "status": "done",
         "channel": "insta",
         "title": "세관공매는...",
@@ -131,7 +145,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-19"
     },
     {
-        "id": 1772152621,
+        "id": 1772498979,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -145,7 +159,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772152622,
+        "id": 1772498980,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -159,7 +173,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-26"
     },
     {
-        "id": 1772152623,
+        "id": 1772498981,
         "status": "done",
         "channel": "insta",
         "title": "2026년...",
@@ -171,19 +185,5 @@ const AUTO_CONTENT_DATA = [
             "comments": 1
         },
         "date": "2026-01-23"
-    },
-    {
-        "id": 1772152624,
-        "status": "done",
-        "channel": "insta",
-        "title": "수강생분의 낙찰 소식과 함께...",
-        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/p/DTrJkKWkoXf/",
-        "analysis": "구글/메타 Graph API 연동 완료",
-        "metrics": {
-            "views": 0,
-            "likes": 0,
-            "comments": 1
-        },
-        "date": "2026-01-19"
     }
 ];
