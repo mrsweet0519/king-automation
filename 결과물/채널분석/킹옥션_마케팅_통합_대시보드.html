@@ -314,7 +314,7 @@
         <!-- 요약 카드 (퍼포먼스 마케팅 중심) -->
         <div class="summary-grid">
             <div class="card">
-                <div class="card-label">💸 주간 광고 지출액 (Meta)</div>
+                <div class="card-label">💸 주간 광고 지출액 (Meta+YouTube)</div>
                 <div class="card-value" id="spend-val">로딩 중...</div>
                 <div class="card-trend trend-red">실시간 광고비용 누적</div>
             </div>
@@ -445,14 +445,14 @@
 
             <!-- 유튜브 광고 ➡️ CRM 퍼널 분석 -->
             <div class="section-box">
-                <div class="section-title">유튜브 광고(Google Ads) ➡️ CRM 획득 퍼널</div>
+                <div class="section-title">유튜브 쇼츠 광고 ➡️ CRM 획득 퍼널 (프로모션 테스트)</div>
                 <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                         <div>
                             <div
                                 style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                                <span style="color: var(--gray);">1. 광고 노출 (조회수/Imp)</span>
-                                <span style="color: var(--gray);" id="yt_impressions">42,500회</span>
+                                <span style="color: var(--gray);">1. 쇼츠 영상 노출 (조회수)</span>
+                                <span style="color: var(--gray);" id="yt-imp-val">로딩 중...</span>
                             </div>
                             <div
                                 style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
@@ -464,32 +464,32 @@
                         <div>
                             <div
                                 style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                                <span style="color: #ff0000;">2. 영상 내 링크 클릭 (유입)</span>
-                                <span style="color: #ff0000;" id="yt_clicks">850명</span>
+                                <span style="color: #ff0000;">2. 영상 내 링크 클릭 (고정댓글 유입)</span>
+                                <span style="color: #ff0000;" id="yt-click-val">로딩 중...</span>
                             </div>
                             <div
                                 style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                                <div
-                                    style="width: 2.0%; height: 100%; background: #ff0000; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
-                                    2.0%</div>
+                                <div id="yt-ctr-bar"
+                                    style="width: 0%; height: 100%; background: #ff0000; min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
+                                    0%</div>
                             </div>
                         </div>
                         <div>
                             <div
                                 style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
-                                <span style="color: var(--primary-red);">3. CRM 신규 DB 획득</span>
-                                <span style="color: var(--primary-red);" id="yt_leads">68명</span>
+                                <span style="color: var(--primary-red);">3. CRM 모집 등록 (최종 전환)</span>
+                                <span style="color: var(--primary-red);" id="yt-lead-val">로딩 중...</span>
                             </div>
                             <div
                                 style="width: 100%; background: #e8e8e8; height: 24px; border-radius: 12px; overflow: hidden;">
-                                <div
-                                    style="width: 8.0%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
-                                    8.0%</div>
+                                <div id="yt-cvr-bar"
+                                    style="width: 0%; height: 100%; background: var(--primary-red); min-width: 45px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 12px;">
+                                    0%</div>
                             </div>
                         </div>
                     </div>
                     <div style="margin-top: 15px; font-size: 12px; color: var(--gray); text-align: right;">
-                        * 💡 유튜브 쇼츠(Shorts) 광고비용/전환율 연동 API 모니터링 중입니다.
+                        * 💡 현재 진행 중인 '반값 낙찰' 쇼츠 프로모션의 1주차 성과를 트래킹합니다.
                     </div>
                 </div>
             </div>
@@ -551,16 +551,15 @@
 
         <!-- 정이사 코멘트 하단 바 -->
         <div class="jung-comment">
-            <h3>🚩 정이사(COO)의 주간 마케팅 작전 지시</h3>
+            <h3>🚩 정이사(COO)의 유튜브 쇼츠 프로모션 피드백</h3>
             <div class="comment-text">
-                대표님, 인스타그램 릴스 광고(A안: 부동산 수익 인증)의 클릭률(CTR 3.2%)이 나쁘지 않으나, <b>클릭 후 CRM 폼 작성으로 이어지는 최종 전환율이 4.1%로
-                    저조</b>합니다.<br>
-                이번 주 최우선 과제는 <b>'리타겟팅 광고'</b>를 즉시 가동하여 한 번 클릭하고 나간 470명에게 <b>'마감 임박'</b> 메시지로 맹추격하는 것입니다.
+                대표님, 이번 <b>"세관공매, 알고 시작하셔야 합니다" 영상이 성공적으로 업로드</b> 되었습니다.<br>
+                유튜브 쇼츠 프로모션의 1주차 핵심 과제는 영상 시청 후 <b>'고정 댓글 링크 클릭'으로 얼마나 많이 유도하느냐(CTR)</b>입니다.
             </div>
             <ul class="action-list">
-                <li>✔️ 인스타그램 릴스 A/B 테스트 (2030 영끌타겟 vs 4050 은퇴타겟) 예산 50% 분배</li>
-                <li>✔️ 블로그 및 랜딩페이지 이탈자 대상 '리타겟팅(Retargeting) 광고' 즉각 세팅</li>
-                <li>✔️ CRM DB가 '신규 수집'으로 들어오면 1시간 내 속전속결 해피콜 공격 진행</li>
+                <li>✔️ 목표: 유튜브 조회수 대비 링크 클릭률(CTR) 최소 2.0% 달성하기</li>
+                <li>✔️ 클릭률 1.0% 미만 시: 다음번 쇼츠 끝부분에 "고정댓글 누르세요!" 목소리/자막 효과 더 크게 키우기</li>
+                <li>✔️ 대시보드 위 지표에 노출(Imp)/클릭/전환 데이터가 쌓이는 속도를 보고 2주차 프로모션 예산 확대 여부 결정</li>
             </ul>
         </div>
 
@@ -589,10 +588,33 @@
 
                     // 데이터 삽입
                     if (meta) {
-                        document.getElementById('spend-val').textContent = formatNumber(meta.spend) + '원';
+                        const yt_data = data.youtube || { impressions: 0, clicks: 0, leads: 0 }; // 임시
+                        
+                        // 상단 합산 (Meta + YouTube 비용 임시 처리)
+                        document.getElementById('spend-val').textContent = formatNumber(meta.spend + (yt_data.spend || 0)) + '원';
                         document.getElementById('cpa-val').textContent = formatNumber(meta.cpa) + '원';
-                        document.getElementById('ctr-val').textContent = meta.ctr + '%';
-                        document.getElementById('clicks-val').textContent = formatNumber(meta.clicks);
+                        
+                        // CTR (메타 + YT 전체 합산 대체)
+                        const total_clicks = meta.clicks + yt_data.clicks;
+                        document.getElementById('ctr-val').textContent = `${meta.ctr}%`;
+                        document.getElementById('clicks-val').textContent = formatNumber(total_clicks);
+
+                        // 유튜브 퍼널 데이터 연결
+                        document.getElementById('yt-imp-val').textContent = formatNumber(yt_data.impressions) + '회';
+                        document.getElementById('yt-click-val').textContent = formatNumber(yt_data.clicks) + '명';
+                        document.getElementById('yt-lead-val').textContent = formatNumber(yt_data.leads) + '명';
+                        
+                        // 유튜브 퍼널 바 애니메이션 처리
+                        const yt_ctr = yt_data.impressions > 0 ? ((yt_data.clicks / yt_data.impressions) * 100).toFixed(1) : 0;
+                        const yt_cvr = yt_data.clicks > 0 ? ((yt_data.leads / yt_data.clicks) * 100).toFixed(1) : 0;
+                        
+                        const ytCtrBar = document.getElementById('yt-ctr-bar');
+                        const ytCvrBar = document.getElementById('yt-cvr-bar');
+                        
+                        ytCtrBar.style.width = Math.max(parseFloat(yt_ctr), 5) + '%';
+                        ytCtrBar.textContent = yt_ctr + '%';
+                        ytCvrBar.style.width = Math.max(parseFloat(yt_cvr), 5) + '%';
+                        ytCvrBar.textContent = yt_cvr + '%';
 
                         // 만약 업데이트 일자가 있으면 날짜 타이틀 갱신
                         if (data.last_updated) {
@@ -638,7 +660,7 @@
                     }
                         
                         // SNS업로드 배지 시간도 CRM 데이터가 최신이면 갱신 (서버 데이터 우선)
-                        if (window.CRM_SYNC_DATA[0] && window.CRM_SYNC_DATA[0].date && !data.csv_updated) {
+                        if (window.CRM_SYNC_DATA && window.CRM_SYNC_DATA[0] && window.CRM_SYNC_DATA[0].date && !data.csv_updated) {
                              document.getElementById('sms-date').innerText = 'CRM연동: ' + window.CRM_SYNC_DATA[0].date;
                              document.getElementById('sms-date').style.display = 'block';
                         }
