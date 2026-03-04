@@ -47,21 +47,35 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772499714,
+        "id": 1772582510,
+        "status": "done",
+        "channel": "shorts",
+        "title": "세관공매, 알고 시작하셔야 합니다! (모르면 무조건 손해보는 6회차 구조)",
+        "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=mQS91B8rpSQ",
+        "analysis": "구글 YouTube API 연동 완료",
+        "metrics": {
+            "views": 454,
+            "likes": 2,
+            "comments": 1
+        },
+        "date": "2026-03-03"
+    },
+    {
+        "id": 1772582511,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매,지금 결정하면 안 되는 이유가 있습니다",
         "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=tjuj31a-1Io",
         "analysis": "구글 YouTube API 연동 완료",
         "metrics": {
-            "views": 506,
+            "views": 507,
             "likes": 1,
-            "comments": 0
+            "comments": 1
         },
         "date": "2026-02-09"
     },
     {
-        "id": 1772499715,
+        "id": 1772582512,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 수익만들기,처음 시작하기 전에 꼭 알아야 할 이야기 #세관공매 #이슈",
@@ -75,7 +89,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772499716,
+        "id": 1772582513,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 실무과정 1일특강｜목록부터 입찰까지 전과정 정리",
@@ -89,7 +103,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-23"
     },
     {
-        "id": 1772499717,
+        "id": 1772582514,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매로 수익 만드는 방법｜어디서 보고 어떻게 시작할까?",
@@ -98,26 +112,40 @@ const AUTO_CONTENT_DATA = [
         "metrics": {
             "views": 1093,
             "likes": 0,
-            "comments": 0
+            "comments": 1
         },
         "date": "2026-01-22"
     },
     {
-        "id": 1772499718,
+        "id": 1772582711,
         "status": "done",
-        "channel": "youtube",
-        "title": "세관공매는 낙찰 전에 결정됩니다｜초보자가 반드시 알아야 할 전체 흐름",
-        "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=CdhWcIXGODg",
-        "analysis": "구글 YouTube API 연동 완료",
+        "channel": "insta",
+        "title": "세관공매,...",
+        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/p/DVXnItdEib5/",
+        "analysis": "구글/메타 Graph API 연동 완료",
         "metrics": {
-            "views": 1671,
+            "views": 0,
             "likes": 0,
-            "comments": 0
+            "comments": 1
         },
-        "date": "2026-01-16"
+        "date": "2026-03-02"
     },
     {
-        "id": 1772499915,
+        "id": 1772582712,
+        "status": "done",
+        "channel": "insta",
+        "title": "세관공매는...",
+        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/p/DU7zGcRkt-e/",
+        "analysis": "구글/메타 Graph API 연동 완료",
+        "metrics": {
+            "views": 0,
+            "likes": 0,
+            "comments": 1
+        },
+        "date": "2026-02-19"
+    },
+    {
+        "id": 1772582713,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -131,59 +159,31 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1772499916,
+        "id": 1772582714,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
-        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/reel/DThkh83DQv3/",
+        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/p/DT9l8w6Equ3/",
         "analysis": "구글/메타 Graph API 연동 완료",
         "metrics": {
             "views": 0,
             "likes": 0,
             "comments": 1
         },
-        "date": "2026-01-15"
+        "date": "2026-01-26"
     },
     {
-        "id": 1772499917,
+        "id": 1772582715,
         "status": "done",
         "channel": "insta",
-        "title": "세관공매,...",
-        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/reel/DTMLVEdDwrz/",
+        "title": "2026년...",
+        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/p/DT1i4VEElt4/",
         "analysis": "구글/메타 Graph API 연동 완료",
         "metrics": {
-            "views": 30,
-            "likes": 2,
-            "comments": 0
-        },
-        "date": "2026-01-07"
-    },
-    {
-        "id": 1772499918,
-        "status": "done",
-        "channel": "insta",
-        "title": "2026년, 어떤 재테크가 뜰까요?...",
-        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/reel/DSHGvJ7DAia/",
-        "analysis": "구글/메타 Graph API 연동 완료",
-        "metrics": {
-            "views": 15,
-            "likes": 1,
+            "views": 0,
+            "likes": 0,
             "comments": 1
         },
-        "date": "2025-12-11"
-    },
-    {
-        "id": 1772499919,
-        "status": "done",
-        "channel": "insta",
-        "title": "📺 KBS ‘사장님 귀는 당나귀 귀’ 방송에 나온 바로...",
-        "desc": "자동 수집된 인스타/릴스입니다.\nhttps://www.instagram.com/reel/DQNdNi-ksdA/",
-        "analysis": "구글/메타 Graph API 연동 완료",
-        "metrics": {
-            "views": 15,
-            "likes": 1,
-            "comments": 1
-        },
-        "date": "2025-10-24"
+        "date": "2026-01-23"
     }
 ];
