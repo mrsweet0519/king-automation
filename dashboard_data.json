@@ -1,18 +1,24 @@
 {
-    "last_updated": "2026-03-04 09:00:15",
+    "last_updated": "2026-03-05 09:00:15",
     "csv_updated": "2026-02-25 23:02",
     "meta_ads": {
-        "spend": 25,
-        "clicks": 211,
-        "impressions": 9297,
+        "spend": 43,
+        "clicks": 328,
+        "impressions": 13988,
         "leads": 0,
         "cpa": 0,
-        "ctr": 2.27
+        "ctr": 2.34
     },
     "naver_blog": {
         "status": "success",
-        "latest_post": "세관공매, 지금 킹옥션에서 시작해야 하는 타이밍",
+        "latest_post": "세관공매 무료공개강의 3월 일정 안내",
         "posts": [
+            {
+                "title": "세관공매 무료공개강의 3월 일정 안내",
+                "link": "https://blog.naver.com/mentor-king/224203973130?fromRss=true&trackingCode=rss",
+                "date": "Wed, 04 Mar 2026 14:42:09 +0900",
+                "category": "공개강의 일정"
+            },
             {
                 "title": "세관공매, 지금 킹옥션에서 시작해야 하는 타이밍",
                 "link": "https://blog.naver.com/mentor-king/224178835458?fromRss=true&trackingCode=rss",
@@ -36,12 +42,6 @@
                 "link": "https://blog.naver.com/mentor-king/224154884842?fromRss=true&trackingCode=rss",
                 "date": "Wed, 21 Jan 2026 18:50:26 +0900",
                 "category": "정보나누기 "
-            },
-            {
-                "title": "세관공매 공고문 처음이라면 이것부터 체크하세요",
-                "link": "https://blog.naver.com/mentor-king/224146577241?fromRss=true&trackingCode=rss",
-                "date": "Wed, 14 Jan 2026 18:04:44 +0900",
-                "category": "킹옥션 세관공매"
             }
         ]
     }
