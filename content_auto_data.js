@@ -47,35 +47,49 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-27"
     },
     {
-        "id": 1773014509,
+        "id": 1773100910,
+        "status": "done",
+        "channel": "youtube",
+        "title": "세관공매 실전수익반에서는 이렇게 수익을 만들어갑니다",
+        "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=jMcR5GNXINQ",
+        "analysis": "구글 YouTube API 연동 완료",
+        "metrics": {
+            "views": 1214,
+            "likes": 0,
+            "comments": 0
+        },
+        "date": "2026-03-09"
+    },
+    {
+        "id": 1773100911,
         "status": "done",
         "channel": "shorts",
         "title": "킹옥션 세관공매 3월 무료공개강의",
         "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=nt9kvICrHtA",
         "analysis": "구글 YouTube API 연동 완료",
         "metrics": {
-            "views": 1650,
-            "likes": 15,
+            "views": 1684,
+            "likes": 20,
             "comments": 1
         },
         "date": "2026-03-04"
     },
     {
-        "id": 1773014510,
+        "id": 1773100912,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매, 알고 시작하셔야 합니다! (모르면 무조건 손해보는 6회차 구조)",
         "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=mQS91B8rpSQ",
         "analysis": "구글 YouTube API 연동 완료",
         "metrics": {
-            "views": 1094,
-            "likes": 16,
+            "views": 1119,
+            "likes": 23,
             "comments": 1
         },
         "date": "2026-03-03"
     },
     {
-        "id": 1773014511,
+        "id": 1773100913,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매,지금 결정하면 안 되는 이유가 있습니다",
@@ -89,7 +103,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-09"
     },
     {
-        "id": 1773014512,
+        "id": 1773100914,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 수익만들기,처음 시작하기 전에 꼭 알아야 할 이야기 #세관공매 #이슈",
@@ -103,21 +117,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1773014513,
-        "status": "done",
-        "channel": "shorts",
-        "title": "세관공매 실무과정 1일특강｜목록부터 입찰까지 전과정 정리",
-        "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=O2mq0u1wYzs",
-        "analysis": "구글 YouTube API 연동 완료",
-        "metrics": {
-            "views": 849,
-            "likes": 1,
-            "comments": 0
-        },
-        "date": "2026-01-23"
-    },
-    {
-        "id": 1773014710,
+        "id": 1773101111,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -131,7 +131,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-03-02"
     },
     {
-        "id": 1773014711,
+        "id": 1773101112,
         "status": "done",
         "channel": "insta",
         "title": "세관공매는...",
@@ -145,7 +145,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-19"
     },
     {
-        "id": 1773014712,
+        "id": 1773101113,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -159,7 +159,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1773014713,
+        "id": 1773101114,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -173,7 +173,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-26"
     },
     {
-        "id": 1773014714,
+        "id": 1773101115,
         "status": "done",
         "channel": "insta",
         "title": "2026년...",
