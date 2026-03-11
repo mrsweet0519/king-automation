@@ -1,13 +1,13 @@
 {
-    "last_updated": "2026-03-10 09:00:14",
+    "last_updated": "2026-03-11 09:00:15",
     "csv_updated": "2026-02-25 23:02",
     "meta_ads": {
-        "spend": 50,
-        "clicks": 356,
-        "impressions": 15636,
+        "spend": 24,
+        "clicks": 146,
+        "impressions": 6352,
         "leads": 0,
         "cpa": 0,
-        "ctr": 2.28
+        "ctr": 2.3
     },
     "naver_blog": {
         "status": "success",
