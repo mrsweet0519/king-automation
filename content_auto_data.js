@@ -47,49 +47,49 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-27"
     },
     {
-        "id": 1773360109,
+        "id": 1773446509,
         "status": "done",
         "channel": "youtube",
         "title": "세관공매 실전수익반에서는 이렇게 수익을 만들어갑니다",
         "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=jMcR5GNXINQ",
         "analysis": "구글 YouTube API 연동 완료",
         "metrics": {
-            "views": 1681,
+            "views": 1682,
             "likes": 0,
             "comments": 0
         },
         "date": "2026-03-09"
     },
     {
-        "id": 1773360110,
+        "id": 1773446510,
         "status": "done",
         "channel": "shorts",
         "title": "킹옥션 세관공매 3월 무료공개강의",
         "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=nt9kvICrHtA",
         "analysis": "구글 YouTube API 연동 완료",
         "metrics": {
-            "views": 1761,
-            "likes": 35,
+            "views": 1763,
+            "likes": 37,
             "comments": 1
         },
         "date": "2026-03-04"
     },
     {
-        "id": 1773360111,
+        "id": 1773446511,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매, 알고 시작하셔야 합니다! (모르면 무조건 손해보는 6회차 구조)",
         "desc": "자동 수집된 유튜브 영상입니다.\nhttps://www.youtube.com/watch?v=mQS91B8rpSQ",
         "analysis": "구글 YouTube API 연동 완료",
         "metrics": {
-            "views": 1190,
-            "likes": 35,
+            "views": 1209,
+            "likes": 37,
             "comments": 1
         },
         "date": "2026-03-03"
     },
     {
-        "id": 1773360112,
+        "id": 1773446512,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매,지금 결정하면 안 되는 이유가 있습니다",
@@ -103,7 +103,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-09"
     },
     {
-        "id": 1773360113,
+        "id": 1773446513,
         "status": "done",
         "channel": "shorts",
         "title": "세관공매 수익만들기,처음 시작하기 전에 꼭 알아야 할 이야기 #세관공매 #이슈",
@@ -117,7 +117,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1773360312,
+        "id": 1773446710,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -131,7 +131,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-03-02"
     },
     {
-        "id": 1773360313,
+        "id": 1773446711,
         "status": "done",
         "channel": "insta",
         "title": "세관공매는...",
@@ -145,7 +145,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-02-19"
     },
     {
-        "id": 1773360314,
+        "id": 1773446712,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -159,7 +159,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-29"
     },
     {
-        "id": 1773360315,
+        "id": 1773446713,
         "status": "done",
         "channel": "insta",
         "title": "세관공매,...",
@@ -173,7 +173,7 @@ const AUTO_CONTENT_DATA = [
         "date": "2026-01-26"
     },
     {
-        "id": 1773360316,
+        "id": 1773446714,
         "status": "done",
         "channel": "insta",
         "title": "2026년...",
